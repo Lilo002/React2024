@@ -7,11 +7,11 @@ interface AppState {
   results: { name: string; description: string }[];
 }
 
-class App extends Component<object, AppState> {
-  constructor(props: object) {
+class App extends Component<unknown, AppState> {
+  constructor(props: unknown) {
     super(props);
     this.state = {
-      inputValue: '',
+      inputValue: localStorage.getItem('Lilo-value') || '',
       results: [],
     };
   }
