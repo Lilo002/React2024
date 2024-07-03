@@ -1,0 +1,11 @@
+.results {
+  width: 100%;
+  padding: 50px;
+  &-catalog {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-around;
+  }
+}

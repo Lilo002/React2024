@@ -1,0 +1,28 @@
+.search {
+  padding: 20px;
+  width: 100%;
+  &-form {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    height: 25px;
+  }
+  &-input {
+    background-color: #737373;
+    border-radius: 4px;
+    color: #dbdbdb;
+    outline: 0;
+    padding: 7px;
+    font-size: 20px;
+  }
+  &-btn {
+    background-color: #737373;
+    border-radius: 4px;
+    color: #dbdbdb;
+    transition: all 0.3s;
+    cursor: pointer;
+    &:hover {
+      background-color: #3f3e3e;
+    }
+  }
+}

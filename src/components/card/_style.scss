@@ -1,0 +1,68 @@
+.card {
+  width: 300px;
+  min-height: 400px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-direction: column;
+  border-radius: 10px;
+  border: 1px black solid;
+  background: rgba(0, 0, 0, 0.575);
+  padding: 10px;
+  &-img {
+    width: 280px;
+    background: rgba(255, 255, 255, 0.719);
+    border-radius: 10px;
+  }
+  &-name {
+    text-transform: capitalize;
+    color: rgba(255, 255, 255, 0.719);
+    font-size: 26px;
+  }
+  &-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    color: rgba(255, 255, 255, 0.719);
+  }
+  &-left {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: flex-start;
+    text-transform: capitalize;
+  }
+  &-right {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: flex-end;
+  }
+  &-description {
+    border-radius: 5px;
+    padding: 4px;
+    text-shadow: 2px 1px 1px rgb(0, 0, 0);
+    &.grass {
+      background-color: green;
+    }
+    &.poison {
+      background-color: orange;
+    }
+    &.fire {
+      background-color: red;
+    }
+    &.flying {
+      background-color: lightblue;
+    }
+    &.water {
+      background-color: blue;
+    }
+    &.bug {
+      background-color: rgb(87, 55, 26);
+    }
+    &.normal {
+      background-color: white;
+    }
+  }
+}
