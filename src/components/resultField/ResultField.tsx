@@ -1,19 +1,20 @@
 import { Component } from 'react';
-
-type Result = {
-  name: string;
-  description: string;
-};
+import { SearchItem } from '../../types';
+import { Card } from '../card/Card';
 
 type ResultFieldProps = {
-  results: Result[];
+  results: SearchItem[];
 };
 
-export class ResultField extends Component<ResultFieldProps> {
+interface ResultFieldState {
+  data: SearchItem[];
+}
+
+export class ResultField extends Component<ResultFieldProps, ResultFieldState> {
   constructor(props: ResultFieldProps) {
     super(props);
     this.state = {
-      results: [],
+      data: props.results,
     };
   }
 
@@ -21,11 +22,8 @@ export class ResultField extends Component<ResultFieldProps> {
     return (
       <div className="results-section">
         <h2>Results</h2>
-        {this.props.results.map((item, index) => (
-          <div key={index} className="result-item">
-            <h3>{item.name}</h3>
-            <p>{item.description}</p>
-          </div>
+        {this.props.results.map((data) => (
+          <Card data={data} key={data.id} />
         ))}
       </div>
     );

@@ -1,14 +1,14 @@
 import { Component } from 'react';
 import { SearchFiled } from './components/searchField/SearchFiled';
 import { ResultField } from './components/resultField/ResultField';
-import { ResponseItem } from './types';
+import { ResponseItem, SearchItem } from './types';
 
 const URL = 'https://pokeapi.co/api/v2/';
 const LIMIT = 20;
 
 interface AppState {
   inputValue: string;
-  results: ResponseItem[];
+  results: SearchItem[];
 }
 
 class App extends Component<unknown, AppState> {
@@ -20,6 +20,10 @@ class App extends Component<unknown, AppState> {
     };
   }
 
+  componentDidMount() {
+    this.fetchData(this.state.inputValue);
+  }
+
   handleSearch = (value: string) => {
     const trimmedValue = value.trim();
     this.setState({ inputValue: trimmedValue });
@@ -28,25 +32,32 @@ class App extends Component<unknown, AppState> {
   };
 
   fetchData = (value: string) => {
-    value.trim() ? this.fetchSearchedData(value) : this.fetchAllData();
+    value.trim() ? this.fetchSearchedData(value) : this.fetchAllItemsData();
   };
 
-  fetchAllData = () =>
+  fetchAllItemsData = async () => {
+    try {
+      const data = await this.fetchAllData();
+      const fetchedData: SearchItem[] = await Promise.all(data.map((item) => this.fetchSearchedData(item.name)));
+      this.setState({ results: fetchedData });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  fetchAllData = (): Promise<ResponseItem[]> =>
     fetch(`${URL}pokemon?limit=${LIMIT}`)
       .then((response) => response.json())
-      .then((data) => {
-        this.setState({ results: data.results });
-        console.log(data.results);
-      })
+      .then((data) => data.results)
       .catch((error) => console.log(error));
 
-  fetchSearchedData = (value: string) =>
+  searchItem = (value: string) => {
+    this.fetchSearchedData(value).then((data) => this.setState({ results: [data] }));
+  };
+
+  fetchSearchedData = (value: string): Promise<SearchItem> =>
     fetch(`${URL}pokemon/${value.trim()}/`)
       .then((response) => response.json())
-      .then((data) => {
-        this.setState({ results: [data] });
-        console.log(data);
-      })
       .catch((error) => console.log(error));
 
   render() {
