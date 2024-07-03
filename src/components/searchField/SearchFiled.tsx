@@ -19,7 +19,6 @@ export class SearchFiled extends Component<SearchSectionProps, SearchSectionStat
 
   handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(this.state.inputValue);
     this.props.onSearch(this.state.inputValue);
   };
 
