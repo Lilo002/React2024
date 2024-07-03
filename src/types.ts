@@ -35,7 +35,11 @@ export type SearchItem = {
     front_female: string | null;
     front_shiny: string | null;
     front_shiny_female: string | null;
-    other: object;
+    other: {
+      ['official-artwork']: {
+        front_default: string;
+      };
+    };
     versions: object;
   };
   stats: Stat[];
