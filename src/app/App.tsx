@@ -1,10 +1,9 @@
 import { Component } from 'react';
-import { SearchFiled } from './components/searchField/SearchFiled';
-import { ResultField } from './components/resultField/ResultField';
-import { ResponseItem, SearchItem } from './types';
-
-const URL = 'https://pokeapi.co/api/v2/';
-const LIMIT = 20;
+import { SearchFiled } from '../components/searchField/SearchFiled';
+import { ResultField } from '../components/resultField/ResultField';
+import { ResponseItem, SearchItem } from '../types';
+import './_style.scss';
+import { LIMIT, URL } from '../constant';
 
 interface AppState {
   inputValue: string;
@@ -32,7 +31,7 @@ class App extends Component<unknown, AppState> {
   };
 
   fetchData = (value: string) => {
-    value.trim() ? this.fetchSearchedData(value) : this.fetchAllItemsData();
+    value.trim() ? this.searchItem(value) : this.fetchAllItemsData();
   };
 
   fetchAllItemsData = async () => {
@@ -52,13 +51,13 @@ class App extends Component<unknown, AppState> {
       .catch((error) => console.log(error));
 
   searchItem = (value: string) => {
-    this.fetchSearchedData(value).then((data) => this.setState({ results: [data] }));
+    this.fetchSearchedData(value)
+      .then((data) => this.setState({ results: [data] }))
+      .catch(() => this.setState({ results: [] }));
   };
 
   fetchSearchedData = (value: string): Promise<SearchItem> =>
-    fetch(`${URL}pokemon/${value.trim()}/`)
-      .then((response) => response.json())
-      .catch((error) => console.log(error));
+    fetch(`${URL}pokemon/${value.trim().toLowerCase()}/`).then((response) => response.json());
 
   render() {
     const { inputValue, results } = this.state;

@@ -1,5 +1,7 @@
 import { Component } from 'react';
 
+import './_style.scss';
+
 interface SearchSectionProps {
   searchValue: string;
   onSearch: (searchTerm: string) => void;
@@ -29,11 +31,18 @@ export class SearchFiled extends Component<SearchSectionProps, SearchSectionStat
   render() {
     const { inputValue } = this.state;
     return (
-      <div className="search-section">
-        <h2></h2>
-        <form onSubmit={this.handleSubmit}>
-          <input type="text" value={inputValue} onChange={this.handleInputChange} placeholder="Search" />
-          <button type="submit">Search</button>
+      <div className="search">
+        <form onSubmit={this.handleSubmit} className="search-form">
+          <input
+            className="search-input"
+            type="text"
+            value={inputValue}
+            onChange={this.handleInputChange}
+            placeholder="Search"
+          />
+          <button className="search-btn" type="submit">
+            Search
+          </button>
         </form>
       </div>
     );

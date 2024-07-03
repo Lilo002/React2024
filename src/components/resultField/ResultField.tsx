@@ -2,6 +2,8 @@ import { Component } from 'react';
 import { SearchItem } from '../../types';
 import { Card } from '../card/Card';
 
+import './_style.scss';
+
 type ResultFieldProps = {
   results: SearchItem[];
 };
@@ -19,12 +21,18 @@ export class ResultField extends Component<ResultFieldProps, ResultFieldState> {
   }
 
   render() {
+    const { results } = this.props;
     return (
-      <div className="results-section">
-        <h2>Results</h2>
-        {this.props.results.map((data) => (
-          <Card data={data} key={data.id} />
-        ))}
+      <div className="results">
+        {results.length > 0 ? (
+          <div className="results-catalog">
+            {results.map((data) => (
+              <Card data={data} key={data.id} />
+            ))}
+          </div>
+        ) : (
+          <h2 className="result-empty">There is no data</h2>
+        )}
       </div>
     );
   }
