@@ -11,20 +11,24 @@
   padding: 10px;
   &-img {
     width: 280px;
-    background: rgba(255, 255, 255, 0.719);
-    border-radius: 10px;
+    height: 280px;
+    display: none;
+    &.loaded {
+      display: block;
+    }
   }
   &-name {
     text-transform: capitalize;
-    color: rgba(255, 255, 255, 0.719);
-    font-size: 26px;
+    color: rgb(255, 255, 255);
+    font-size: 24px;
   }
   &-bottom {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    color: rgba(255, 255, 255, 0.719);
+    color: rgba(255, 255, 255, 0.842);
+    font-size: 13px;
   }
   &-left {
     display: flex;
@@ -36,8 +40,9 @@
   &-right {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 10px;
     align-items: flex-end;
+
   }
   &-description {
     border-radius: 5px;
@@ -56,7 +61,7 @@
       background-color: lightblue;
     }
     &.water {
-      background-color: blue;
+      background-color: rgb(101, 101, 209);
     }
     &.bug {
       background-color: rgb(87, 55, 26);
@@ -64,5 +69,66 @@
     &.normal {
       background-color: white;
     }
+    &.dragon {
+      background-color: rgb(255, 94, 0);
+    }
+    &.electric {
+      background-color: #b4b4b4;
+    }
+    &.ground {
+      background-color: #553f23;
+    }
+    &.fairy {
+      background-color: #eb93d5cb;
+    }
+    &.fighting {
+      background-color: #000000;
+    }
+    &.psychic {
+      background-color: #8a9173;
+    }
+    &.rock {
+      background-color: #4b4e42;
+    }
+    &.steel {
+      background-color: #777777;
+    }
+    &.ice {
+      background-color: rgb(187, 187, 243);
+    }
   }
+  &-img-container {
+    position: relative;
+    width: 280px;
+    height: 280px;
+    background: rgba(255, 255, 255, 0.719);
+    border-radius: 10px;
+  }
+
+  &-loader {
+    width: 48px;
+    height: 48px;
+    border: 5px solid #3f3e3e;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+    }
+
+    @keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+      }
+    100% {
+        transform: rotate(360deg);
+      }
+    } 
+}
+
+.loader-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
