@@ -37,7 +37,7 @@ export class SearchFiled extends Component<SearchSectionProps, SearchSectionStat
   render() {
     const { inputValue, isCrashed } = this.state;
     if (isCrashed) {
-      throw new Error();
+      throw new Error('You crashed...');
     }
     return (
       <div className="search">
