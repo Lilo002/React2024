@@ -9,6 +9,7 @@ interface SearchSectionProps {
 
 interface SearchSectionState {
   inputValue: string;
+  isCrashed: boolean;
 }
 
 export class SearchFiled extends Component<SearchSectionProps, SearchSectionState> {
@@ -16,6 +17,7 @@ export class SearchFiled extends Component<SearchSectionProps, SearchSectionStat
     super(props);
     this.state = {
       inputValue: props.searchValue,
+      isCrashed: false,
     };
   }
 
@@ -28,8 +30,15 @@ export class SearchFiled extends Component<SearchSectionProps, SearchSectionStat
     this.setState({ inputValue: event.target.value });
   };
 
+  throwError = () => {
+    this.setState({ isCrashed: true });
+  };
+
   render() {
-    const { inputValue } = this.state;
+    const { inputValue, isCrashed } = this.state;
+    if (isCrashed) {
+      throw new Error();
+    }
     return (
       <div className="search">
         <form onSubmit={this.handleSubmit} className="search-form">
@@ -44,6 +53,9 @@ export class SearchFiled extends Component<SearchSectionProps, SearchSectionStat
             Search
           </button>
         </form>
+        <button onClick={this.throwError} className="search-btn">
+          Crash page...
+        </button>
       </div>
     );
   }

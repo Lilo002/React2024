@@ -1,0 +1,10 @@
+.error {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 20px;
+  padding: 50px 0;
+  &-img {
+    width: 250px;
+  }
+}

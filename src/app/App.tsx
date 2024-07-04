@@ -42,16 +42,16 @@ class App extends Component<unknown, AppState> {
       const data = await this.fetchAllData();
       const fetchedData: SearchItem[] = await Promise.all(data.map((item) => this.fetchSearchedData(item.name)));
       this.setState({ results: fetchedData, isLoaded: true });
-    } catch (error) {
-      console.error(error);
+    } catch {
+      this.setState({ results: [], isLoaded: true });
     }
   };
 
   fetchAllData = (): Promise<ResponseItem[]> =>
-    fetch(`${URL}pokemon?limit=${LIMIT}`)
+    fetch(`${URL}pokemon?limit=${LIMIT}&offset=${0}`)
       .then((response) => response.json())
       .then((data) => data.results)
-      .catch((error) => console.log(error));
+      .catch(() => this.setState({ results: [] }));
 
   searchItem = (value: string) => {
     this.fetchSearchedData(value)
