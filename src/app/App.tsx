@@ -8,6 +8,7 @@ import { LIMIT, URL } from '../constant';
 interface AppState {
   inputValue: string;
   results: SearchItem[];
+  isLoaded: boolean;
 }
 
 class App extends Component<unknown, AppState> {
@@ -16,6 +17,7 @@ class App extends Component<unknown, AppState> {
     this.state = {
       inputValue: localStorage.getItem('Lilo-value') || '',
       results: [],
+      isLoaded: true,
     };
   }
 
@@ -24,6 +26,7 @@ class App extends Component<unknown, AppState> {
   }
 
   handleSearch = (value: string) => {
+    this.setState({ isLoaded: false });
     const trimmedValue = value.trim();
     this.setState({ inputValue: trimmedValue });
     localStorage.setItem('Lilo-value', trimmedValue);
@@ -38,7 +41,7 @@ class App extends Component<unknown, AppState> {
     try {
       const data = await this.fetchAllData();
       const fetchedData: SearchItem[] = await Promise.all(data.map((item) => this.fetchSearchedData(item.name)));
-      this.setState({ results: fetchedData });
+      this.setState({ results: fetchedData, isLoaded: true });
     } catch (error) {
       console.error(error);
     }
@@ -52,19 +55,19 @@ class App extends Component<unknown, AppState> {
 
   searchItem = (value: string) => {
     this.fetchSearchedData(value)
-      .then((data) => this.setState({ results: [data] }))
-      .catch(() => this.setState({ results: [] }));
+      .then((data) => this.setState({ results: [data], isLoaded: true }))
+      .catch(() => this.setState({ results: [], isLoaded: true }));
   };
 
   fetchSearchedData = (value: string): Promise<SearchItem> =>
     fetch(`${URL}pokemon/${value.trim().toLowerCase()}/`).then((response) => response.json());
 
   render() {
-    const { inputValue, results } = this.state;
+    const { inputValue, results, isLoaded } = this.state;
     return (
       <div className="app">
         <SearchFiled searchValue={inputValue} onSearch={this.handleSearch} />
-        <ResultField results={results} />
+        <ResultField results={results} isLoaded={isLoaded} />
       </div>
     );
   }

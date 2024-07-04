@@ -5,6 +5,7 @@ import './_style.scss';
 
 type CardState = {
   data: SearchItem;
+  isLoaded: boolean;
 };
 
 type CardProps = {
@@ -16,9 +17,13 @@ export class Card extends Component<CardProps, CardState> {
     super(props);
     this.state = {
       data: props.data,
+      isLoaded: false,
     };
-    console.log(props);
   }
+
+  handleImageLoad = () => {
+    this.setState({ isLoaded: true });
+  };
 
   render() {
     const {
@@ -34,12 +39,26 @@ export class Card extends Component<CardProps, CardState> {
     } = this.props.data;
     return (
       <div className="card">
-        <img className="card-img" loading="lazy" src={front_default} alt={name} />
+        <div className="card-img-container">
+          {!this.state.isLoaded && (
+            <div className="loader-container">
+              <div className="card-loader"></div>
+            </div>
+          )}
+          <img
+            className={`card-img ${this.state.isLoaded ? 'loaded' : ''}`}
+            src={front_default}
+            alt={name}
+            onLoad={this.handleImageLoad}
+          />
+        </div>
         <h2 className="card-name">{name}</h2>
         <div className="card-bottom">
           <div className="card-left">
-            {types.map(({ type: { name } }) => (
-              <span className={`card-description ${name}`}>{name}</span>
+            {types.map(({ type: { name } }, i) => (
+              <span className={`card-description ${name}`} key={i}>
+                {name}
+              </span>
             ))}
           </div>
           <div className="card-right">

@@ -2,10 +2,13 @@ import { Component } from 'react';
 import { SearchItem } from '../../types';
 import { Card } from '../card/Card';
 
+import image from '../../assets/empty.png';
+
 import './_style.scss';
 
 type ResultFieldProps = {
   results: SearchItem[];
+  isLoaded: boolean;
 };
 
 interface ResultFieldState {
@@ -21,17 +24,28 @@ export class ResultField extends Component<ResultFieldProps, ResultFieldState> {
   }
 
   render() {
-    const { results } = this.props;
+    const { results, isLoaded } = this.props;
     return (
       <div className="results">
-        {results.length > 0 ? (
+        {!isLoaded && (
+          <div className="loader-container">
+            <span className="results-loader"></span>
+          </div>
+        )}
+        {isLoaded && results.length > 0 && (
           <div className="results-catalog">
             {results.map((data) => (
-              <Card data={data} key={data.id} />
+              <div className="results-item" key={data.id}>
+                <Card data={data} />
+              </div>
             ))}
           </div>
-        ) : (
-          <h2 className="result-empty">There is no data</h2>
+        )}
+        {isLoaded && results.length === 0 && (
+          <>
+            <h2 className="results-empty">Oops, this Pokémon doesn't exist yet. Try searching for another one.</h2>
+            <img src={image} alt="empty" className="results-empty-img" />
+          </>
         )}
       </div>
     );

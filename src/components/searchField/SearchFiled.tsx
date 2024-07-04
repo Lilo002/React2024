@@ -38,7 +38,7 @@ export class SearchFiled extends Component<SearchSectionProps, SearchSectionStat
             type="text"
             value={inputValue}
             onChange={this.handleInputChange}
-            placeholder="Search"
+            placeholder="Enter name or random number"
           />
           <button className="search-btn" type="submit">
             Search
