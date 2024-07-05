@@ -17,7 +17,7 @@ class App extends Component<unknown, AppState> {
     this.state = {
       inputValue: localStorage.getItem('Lilo-value') || '',
       results: [],
-      isLoaded: true,
+      isLoaded: false,
     };
   }
 
