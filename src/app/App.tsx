@@ -1,76 +1,62 @@
-import { Component } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { SearchFiled } from '../components/searchField/SearchFiled';
 import { ResultField } from '../components/resultField/ResultField';
 import { ResponseItem, SearchItem } from '../types';
 import './_style.scss';
 import { LIMIT, URL } from '../constant';
 
-interface AppState {
-  inputValue: string;
-  results: SearchItem[];
-  isLoaded: boolean;
-}
+function App() {
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
+  const [results, setResults] = useState<null | SearchItem | ResponseItem[]>(null);
+  const [search, setSearch] = useState(getDataFromLocalStorage());
 
-class App extends Component<unknown, AppState> {
-  constructor(props: unknown) {
-    super(props);
-    this.state = {
-      inputValue: localStorage.getItem('Lilo-value') || '',
-      results: [],
-      isLoaded: false,
-    };
+  function getDataFromLocalStorage(): string {
+    return localStorage.getItem('Lilo-value') || '';
   }
 
-  componentDidMount() {
-    this.fetchData(this.state.inputValue);
-  }
-
-  handleSearch = (value: string) => {
-    this.setState({ isLoaded: false });
-    const trimmedValue = value.trim();
-    this.setState({ inputValue: trimmedValue });
-    localStorage.setItem('Lilo-value', trimmedValue);
-    this.fetchData(value);
+  const fetchAllData = async (): Promise<ResponseItem[]> => {
+    const response = await fetch(`${URL}pokemon?limit=${LIMIT}&offset=${0}`);
+    const data = await response.json();
+    const results = data.results;
+    return results;
   };
 
-  fetchData = (value: string) => {
-    value.trim() ? this.searchItem(value) : this.fetchAllItemsData();
+  const fetchSearchedData = async (value: string): Promise<SearchItem> => {
+    const response = await fetch(`${URL}pokemon/${value.trim().toLowerCase()}/`);
+    const data = await response.json();
+    return data;
   };
 
-  fetchAllItemsData = async () => {
+  const fetchData = useCallback(async (value: string) => {
     try {
-      const data = await this.fetchAllData();
-      const fetchedData: SearchItem[] = await Promise.all(data.map((item) => this.fetchSearchedData(item.name)));
-      this.setState({ results: fetchedData, isLoaded: true });
-    } catch {
-      this.setState({ results: [], isLoaded: true });
+      const data = value.trim() ? await fetchSearchedData(value) : await fetchAllData();
+      setResults(data);
+      setIsDataLoaded(true);
+    } catch (error) {
+      setResults(null);
+      setIsDataLoaded(true);
+      console.error(error);
     }
+  }, []);
+
+  useEffect(() => {
+    fetchData(search);
+  }, [fetchData, search]);
+
+  const handleSearch = (value: string) => {
+    setIsDataLoaded(false);
+
+    const trimmedValue = value.trim();
+    setSearch(trimmedValue);
+    localStorage.setItem('Lilo-value', trimmedValue);
   };
 
-  fetchAllData = (): Promise<ResponseItem[]> =>
-    fetch(`${URL}pokemon?limit=${LIMIT}&offset=${0}`)
-      .then((response) => response.json())
-      .then((data) => data.results)
-      .catch(() => this.setState({ results: [] }));
-
-  searchItem = (value: string) => {
-    this.fetchSearchedData(value)
-      .then((data) => this.setState({ results: [data], isLoaded: true }))
-      .catch(() => this.setState({ results: [], isLoaded: true }));
-  };
-
-  fetchSearchedData = (value: string): Promise<SearchItem> =>
-    fetch(`${URL}pokemon/${value.trim().toLowerCase()}/`).then((response) => response.json());
-
-  render() {
-    const { inputValue, results, isLoaded } = this.state;
-    return (
-      <div className="app">
-        <SearchFiled searchValue={inputValue} onSearch={this.handleSearch} />
-        <ResultField results={results} isLoaded={isLoaded} />
-      </div>
-    );
-  }
+  return (
+    <div className="app">
+      <SearchFiled searchValue={search} onSearch={handleSearch} />
+      <ResultField results={results} isDataLoaded={isDataLoaded} />
+    </div>
+  );
 }
 
 export default App;
