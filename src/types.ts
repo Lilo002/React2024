@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from 'react';
+
 export type ResponseItem = {
   name: string;
   url: string;
@@ -103,3 +105,5 @@ type Type = {
     url: string;
   };
 };
+
+export type UseSearchQuery = [string, Dispatch<SetStateAction<string>>];
