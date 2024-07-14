@@ -12,7 +12,7 @@ export function Details() {
   const { id } = useParams();
   const [isLoaded, setIsLoaded] = useState(false);
   const [data, setData] = useState<null | SearchItem>(null);
-  const { createSearchParams, getPageValue } = useNavigateMethods();
+  const { createSearchParams, getPageValue, navigateToMainPage } = useNavigateMethods();
 
   const fetchSearchedData = async (value: string): Promise<SearchItem> => {
     const response = await fetch(`${URL}pokemon/${value.trim().toLowerCase()}/`);
@@ -30,6 +30,7 @@ export function Details() {
     } catch (error) {
       console.log(error);
       setData(null);
+      navigateToMainPage();
     }
     setIsLoaded(true);
   }, [id]);
