@@ -1,13 +1,12 @@
 import { ResponseItem, SearchItem } from '../../types';
 
-import image from '../../assets/empty.png';
-
 import './_style.scss';
 import { MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { LIMIT, OFFSET, URL } from '../../constant';
 import { useNavigateMethods } from '../../hooks/useNavigateMethods';
 import { Buttons } from '../buttons/buttons';
-import { ListItem } from '../listItem/listItem';
+import { List } from '../list/list';
+import { Loader } from '../loader/loader';
 
 export function ResultField() {
   const { navigateToMainPage, getPageValue, getSearchValue } = useNavigateMethods();
@@ -66,18 +65,11 @@ export function ResultField() {
     <div className="results" onClick={returnToMainPage}>
       <div className="results-container">
         {!isDataLoaded ? (
-          <div className="loader-container">
-            <span className="results-loader"></span>
-          </div>
-        ) : results ? (
-          <div ref={list} className="results-catalog">
-            <ListItem results={results} />
-          </div>
+          <Loader />
         ) : (
-          <>
-            <h2 className="results-empty">Oops, this Pokémon doesn't exist yet. Try searching for another one.</h2>
-            <img src={image} alt="empty" className="results-empty-img" />
-          </>
+          <div ref={list} className="results-catalog">
+            <List results={results} />
+          </div>
         )}
       </div>
       <Buttons isNextBtnDisabled={isNextBtnDisabled()} isPrevBtnDisabled={isPrevBtnDisabled()} />

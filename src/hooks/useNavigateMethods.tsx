@@ -3,19 +3,13 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 export function useNavigateMethods() {
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const location = useLocation();
 
-  const createSearchParams = () => {
+  const createSearchParams = (page: number = 1) => {
     const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.set('page', page.toString());
     return newSearchParams.toString();
-  };
-
-  const updateSearchParams = (page: number) => {
-    setSearchParams((prev) => {
-      prev.set('page', page.toString());
-      return prev;
-    });
   };
 
   const navigateToMainPage = () => {
@@ -26,21 +20,7 @@ export function useNavigateMethods() {
 
   const getSearchValue = useCallback(() => searchParams.get('search') || '', [searchParams]);
 
-  const increaseOffset = () => {
-    const newOffset = getPageValue() + 1;
-    updateSearchParams(newOffset);
-    navigateToMainPage();
-  };
-
-  const decreaseOffset = () => {
-    const newOffset = getPageValue() - 1;
-    updateSearchParams(newOffset);
-    navigateToMainPage();
-  };
-
   return {
-    increaseOffset,
-    decreaseOffset,
     navigateToMainPage,
     getPageValue,
     createSearchParams,

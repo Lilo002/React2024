@@ -13,8 +13,15 @@ export function SearchField() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (searchQuery) {
+      navigate(`/?page=1${searchQuery && '&search=' + searchQuery}`);
+    }
+  }, []);
+
+  useEffect(() => {
     setSearchValue(searchQuery);
   }, [searchQuery]);
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = event.currentTarget;
