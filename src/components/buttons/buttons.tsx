@@ -12,13 +12,31 @@ export function Buttons({ isPrevBtnDisabled, isNextBtnDisabled }: ButtonsProps) 
   const prevPageUrl = `/?${createSearchParams(currentPage - 1)}`;
   const nextPageUrl = `/?${createSearchParams(currentPage + 1)}`;
 
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, isDisabled: boolean) => {
+    if (isDisabled) {
+      e.preventDefault();
+    }
+  };
+
+  const createButtonClass = (isDisabled: boolean) => {
+    return `button ${isDisabled ? 'disabled' : ''}`;
+  };
+
   return (
     <div className="left-buttons">
-      <Link to={prevPageUrl} className="button" aria-disabled={isPrevBtnDisabled}>
+      <Link
+        to={prevPageUrl}
+        className={createButtonClass(isPrevBtnDisabled)}
+        onClick={(e) => handleClick(e, isPrevBtnDisabled)}
+      >
         prev
       </Link>
 
-      <Link to={nextPageUrl} className="button" aria-disabled={isNextBtnDisabled}>
+      <Link
+        to={nextPageUrl}
+        className={createButtonClass(isNextBtnDisabled)}
+        onClick={(e) => handleClick(e, isNextBtnDisabled)}
+      >
         next
       </Link>
     </div>
