@@ -28,7 +28,6 @@ export function Details() {
         setData(data);
       }
     } catch (error) {
-      console.log(error);
       setData(null);
       navigateToMainPage();
     }

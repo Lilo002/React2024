@@ -4,7 +4,6 @@ import { useNavigateMethods } from '../../hooks/useNavigateMethods';
 
 export function ListItem({ data }: { data: SearchItem | ResponseItem }) {
   const { createSearchParams, getPageValue } = useNavigateMethods();
-  console.log(data);
   return (
     <li className="results-item">
       <NavLink
