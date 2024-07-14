@@ -1,26 +1,19 @@
-import { useEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import { useNavigateMethods } from './useNavigateMethods';
 
 export function useSearchQuery() {
-  const [searchQuery, setSearchQuery] = useState('');
   const { getSearchValue } = useNavigateMethods();
+  const [searchQuery, setSearchQuery] = useState(getDataFromLocalStorage());
 
   function getDataFromLocalStorage() {
+    const search = getSearchValue();
+    if (search) return search;
     return localStorage.getItem('lilo-value') || '';
   }
 
-  const ref = useRef(searchQuery);
-
-  useEffect(() => {
-    ref.current = getSearchValue();
-  }, [getSearchValue, searchQuery]);
-
-  useEffect(() => {
-    setSearchQuery(getDataFromLocalStorage());
-    return () => {
-      localStorage.setItem('lilo-value', ref.current);
-    };
-  }, []);
+  useLayoutEffect(() => {
+    localStorage.setItem('lilo-value', searchQuery);
+  }, [searchQuery]);
 
   return { searchQuery, setSearchQuery };
 }
