@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { SearchItem } from '../../types';
+import { Loader } from '../loader/loader';
 
 type CardProps = {
   data: SearchItem;
@@ -24,13 +25,9 @@ export function Card({ data }: CardProps) {
   };
 
   return (
-    <div className="card">
+    <div className="card" data-testid="card">
       <div className="card-img-container">
-        {!isImageLoaded && (
-          <div className="loader-container">
-            <div className="card-loader"></div>
-          </div>
-        )}
+        {!isImageLoaded && <Loader />}
         <img
           className={`card-img ${isImageLoaded ? 'loaded' : ''}`}
           src={front_default}

@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { useNavigateMethods } from '../../hooks/useNavigateMethods';
 import './buttons.scss';
 type ButtonsProps = {
@@ -5,16 +6,21 @@ type ButtonsProps = {
   isNextBtnDisabled: boolean;
 };
 export function Buttons({ isPrevBtnDisabled, isNextBtnDisabled }: ButtonsProps) {
-  const { decreaseOffset, increaseOffset } = useNavigateMethods();
+  const { getPageValue, createSearchParams } = useNavigateMethods();
+  const currentPage = getPageValue();
+
+  const prevPageUrl = `/?${createSearchParams(currentPage - 1)}`;
+  const nextPageUrl = `/?${createSearchParams(currentPage + 1)}`;
+
   return (
     <div className="left-buttons">
-      <button className="button" disabled={isPrevBtnDisabled} onClick={decreaseOffset}>
+      <Link to={prevPageUrl} className="button" aria-disabled={isPrevBtnDisabled}>
         prev
-      </button>
+      </Link>
 
-      <button className="button" disabled={isNextBtnDisabled} onClick={increaseOffset}>
+      <Link to={nextPageUrl} className="button" aria-disabled={isNextBtnDisabled}>
         next
-      </button>
+      </Link>
     </div>
   );
 }

@@ -4,7 +4,7 @@ import { Layout } from '../layout/layout';
 import { Details } from '../components/details/details';
 import { ErrorPage } from '../components/404/404';
 
-function App() {
+export function App() {
   return (
     <Router>
       <Routes>
@@ -16,5 +16,3 @@ function App() {
     </Router>
   );
 }
-
-export default App;

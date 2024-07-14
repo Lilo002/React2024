@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './app/App.tsx';
+import { App } from './app/App.tsx';
 import { ErrorBoundary } from './errorBoundary/ErrorBoundary.tsx';
 import image from './assets/error.png';
 
