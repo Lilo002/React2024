@@ -1,62 +1,55 @@
-import { Component } from 'react';
+import { useEffect, useState } from 'react';
 
 import './_style.scss';
+import { useSearchQuery } from '../../hooks/useSearchQuery';
+import { useNavigate } from 'react-router-dom';
+import { useNavigateMethods } from '../../hooks/useNavigateMethods';
 
-interface SearchSectionProps {
-  searchValue: string;
-  onSearch: (searchTerm: string) => void;
-}
+export function SearchField() {
+  const { searchQuery, setSearchQuery } = useSearchQuery();
+  const [searchValue, setSearchValue] = useState(searchQuery);
+  const { navigateToMainPage } = useNavigateMethods();
 
-interface SearchSectionState {
-  inputValue: string;
-  isCrashed: boolean;
-}
+  const navigate = useNavigate();
 
-export class SearchFiled extends Component<SearchSectionProps, SearchSectionState> {
-  constructor(props: SearchSectionProps) {
-    super(props);
-    this.state = {
-      inputValue: props.searchValue,
-      isCrashed: false,
-    };
-  }
-
-  handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    this.props.onSearch(this.state.inputValue);
-  };
-
-  handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ inputValue: event.target.value });
-  };
-
-  throwError = () => {
-    this.setState({ isCrashed: true });
-  };
-
-  render() {
-    const { inputValue, isCrashed } = this.state;
-    if (isCrashed) {
-      throw new Error('You crashed...');
+  useEffect(() => {
+    if (searchQuery) {
+      navigate(`/?page=1${searchQuery && '&search=' + searchQuery}`);
     }
-    return (
-      <div className="search">
-        <form onSubmit={this.handleSubmit} className="search-form">
-          <input
-            className="search-input"
-            type="text"
-            value={inputValue}
-            onChange={this.handleInputChange}
-            placeholder="Enter name or random number"
-          />
-          <button className="search-btn" type="submit">
-            Search
-          </button>
-        </form>
-        <button onClick={this.throwError} className="search-btn">
-          Crash page...
+  }, []);
+
+  useEffect(() => {
+    setSearchValue(searchQuery);
+  }, [searchQuery]);
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const input = form.elements.namedItem('search') as HTMLInputElement;
+    const { value } = input;
+    setSearchQuery(value);
+    navigate(`/?page=1${value && '&search=' + value}`);
+  };
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(event.target.value);
+  };
+
+  return (
+    <div className="search" onClick={navigateToMainPage}>
+      <form onSubmit={handleSubmit} className="search-form">
+        <input
+          className="search-input"
+          type="text"
+          name="search"
+          value={searchValue}
+          onChange={handleInputChange}
+          placeholder="Enter number or name"
+        />
+        <button className="search-btn" type="submit">
+          Search
         </button>
-      </div>
-    );
-  }
+      </form>
+    </div>
+  );
 }

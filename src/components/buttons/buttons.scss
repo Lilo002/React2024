@@ -1,0 +1,23 @@
+.left-buttons {
+  display: flex;
+  gap: 10px;
+  .button {
+    background-color: #737373;
+    border-radius: 4px;
+    color: #dbdbdb;
+    cursor: pointer;
+    width: 60px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    &[disabled] {
+      cursor: initial;
+    }
+    &.disabled {
+      cursor: inherit;
+      background-color: #383838;
+    }
+  }
+}

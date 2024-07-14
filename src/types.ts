@@ -1,59 +1,51 @@
+import { Dispatch, SetStateAction } from 'react';
+
 export type ResponseItem = {
   name: string;
   url: string;
 };
 
 export type SearchItem = {
-  abilities: Ability[];
-  base_experience: number;
-  cries: {
+  base_experience?: number;
+  cries?: {
     latest: string;
     legacy: string;
   };
-  forms: Form[];
-  game_indices: Game[];
+  forms?: Form[];
+  game_indices?: Game[];
   height: number;
-  held_items: [];
+  held_items?: [];
   id: number;
-  is_default: boolean;
-  location_area_encounters: string;
-  moves: Move[];
+  is_default?: boolean;
+  location_area_encounters?: string;
+  moves?: Move[];
   name: string;
-  order: number;
-  past_abilities: [];
-  past_types: [];
-  species: {
+  order?: number;
+  past_abilities?: [];
+  past_types?: [];
+  species?: {
     name: string;
     url: string;
   };
   sprites: {
-    back_default: string | null;
-    back_female: string | null;
-    back_shiny: string | null;
-    back_shiny_female: string | null;
-    front_default: string | null;
-    front_female: string | null;
-    front_shiny: string | null;
-    front_shiny_female: string | null;
+    back_default?: string | null;
+    back_female?: string | null;
+    back_shiny?: string | null;
+    back_shiny_female?: string | null;
+    front_default?: string | null;
+    front_female?: string | null;
+    front_shiny?: string | null;
+    front_shiny_female?: string | null;
     other: {
       ['official-artwork']: {
         front_default: string;
       };
     };
-    versions: object;
+    versions?: object;
   };
-  stats: Stat[];
+  stats?: Stat[];
   types: Type[];
   weight: number;
-};
-
-type Ability = {
-  ability: {
-    name: string;
-    url: string;
-  };
-  is_hidden: boolean;
-  slot: number;
 };
 
 type Form = {
@@ -97,9 +89,11 @@ type Stat = {
 };
 
 type Type = {
-  slot: number;
+  slot?: number;
   type: {
     name: string;
-    url: string;
+    url?: string;
   };
 };
+
+export type UseSearchQuery = [string, Dispatch<SetStateAction<string>>];

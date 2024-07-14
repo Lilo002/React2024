@@ -1,72 +1,54 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import { SearchItem } from '../../types';
-
-import './_style.scss';
-
-type CardState = {
-  data: SearchItem;
-  isLoaded: boolean;
-};
+import { Loader } from '../loader/loader';
 
 type CardProps = {
   data: SearchItem;
 };
 
-export class Card extends Component<CardProps, CardState> {
-  constructor(props: CardProps) {
-    super(props);
-    this.state = {
-      data: props.data,
-      isLoaded: false,
-    };
-  }
+export function Card({ data }: CardProps) {
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const {
+    name,
+    sprites: {
+      other: {
+        ['official-artwork']: { front_default },
+      },
+    },
+    types,
+    weight,
+    height,
+  } = data;
 
-  handleImageLoad = () => {
-    this.setState({ isLoaded: true });
+  const handleImageLoad = () => {
+    setIsImageLoaded(true);
   };
 
-  render() {
-    const {
-      name,
-      sprites: {
-        other: {
-          ['official-artwork']: { front_default },
-        },
-      },
-      types,
-      weight,
-      height,
-    } = this.props.data;
-    return (
-      <div className="card">
-        <div className="card-img-container">
-          {!this.state.isLoaded && (
-            <div className="loader-container">
-              <div className="card-loader"></div>
-            </div>
-          )}
-          <img
-            className={`card-img ${this.state.isLoaded ? 'loaded' : ''}`}
-            src={front_default}
-            alt={name}
-            onLoad={this.handleImageLoad}
-          />
+  return (
+    <div className="card" data-testid="card">
+      <div className="card-img-container">
+        {!isImageLoaded && <Loader />}
+        <img
+          className={`card-img ${isImageLoaded ? 'loaded' : ''}`}
+          src={front_default}
+          alt={name}
+          onLoad={handleImageLoad}
+        />
+      </div>
+      <h2 className="card-name">{name}</h2>
+      <div className="card-bottom">
+        <div className="card-left">
+          {types.map(({ type: { name } }, i) => (
+            <span className={`card-description ${name}`} key={i}>
+              {name}
+            </span>
+          ))}
         </div>
-        <h2 className="card-name">{name}</h2>
-        <div className="card-bottom">
-          <div className="card-left">
-            {types.map(({ type: { name } }, i) => (
-              <span className={`card-description ${name}`} key={i}>
-                {name}
-              </span>
-            ))}
-          </div>
-          <div className="card-right">
-            <span>Weight: {weight / 10} kg</span>
-            <span>Height: {height / 10} m</span>
-          </div>
+        <div className="card-right">
+          <span>Weight: {weight / 10} kg</span>
+          <span>Height: {height / 10} m</span>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 }
