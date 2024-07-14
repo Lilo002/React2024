@@ -6,7 +6,7 @@ type ButtonsProps = {
   isNextBtnDisabled: boolean;
 };
 export function Buttons({ isPrevBtnDisabled, isNextBtnDisabled }: ButtonsProps) {
-  const { getPageValue, createSearchParams } = useNavigateMethods();
+  const { getPageValue, createSearchParams, navigateToMainPage } = useNavigateMethods();
   const currentPage = getPageValue();
 
   const prevPageUrl = `/?${createSearchParams(currentPage - 1)}`;
@@ -15,6 +15,7 @@ export function Buttons({ isPrevBtnDisabled, isNextBtnDisabled }: ButtonsProps) 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, isDisabled: boolean) => {
     if (isDisabled) {
       e.preventDefault();
+      navigateToMainPage();
     }
   };
 
