@@ -8,12 +8,12 @@ export function useNavigateMethods() {
 
   const createSearchParams = (page: number = 1) => {
     const newSearchParams = new URLSearchParams(searchParams);
-    newSearchParams.set('page', page.toString());
+    if (page) newSearchParams.set('page', page.toString());
     return newSearchParams.toString();
   };
 
   const navigateToMainPage = () => {
-    if (location.pathname !== '/') navigate({ pathname: '/', search: createSearchParams() });
+    if (location.pathname !== '/') navigate({ pathname: '/', search: createSearchParams(getPageValue()) });
   };
 
   const getPageValue = useCallback(() => Number(searchParams.get('page') || 1), [searchParams]);

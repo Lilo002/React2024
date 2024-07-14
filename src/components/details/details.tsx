@@ -12,7 +12,7 @@ export function Details() {
   const { id } = useParams();
   const [isLoaded, setIsLoaded] = useState(false);
   const [data, setData] = useState<null | SearchItem>(null);
-  const { createSearchParams } = useNavigateMethods();
+  const { createSearchParams, getPageValue } = useNavigateMethods();
 
   const fetchSearchedData = async (value: string): Promise<SearchItem> => {
     const response = await fetch(`${URL}pokemon/${value.trim().toLowerCase()}/`);
@@ -42,7 +42,11 @@ export function Details() {
   return (
     <div className="right-panel" data-testid="details">
       {!isLoaded ? <Loader data-testid="detailed-loader" /> : data && <Card data={data} />}
-      <Link to={{ pathname: '/', search: createSearchParams() }} className="card-close" data-testid="card-close"></Link>
+      <Link
+        to={{ pathname: '/', search: createSearchParams(getPageValue()) }}
+        className="card-close"
+        data-testid="card-close"
+      ></Link>
     </div>
   );
 }
