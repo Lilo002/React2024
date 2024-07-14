@@ -40,7 +40,7 @@ describe('ResultField', () => {
     );
 
     await waitFor(() => {
-      const listItems = screen.getAllByRole('link');
+      const listItems = screen.getAllByTestId('result-item');
       listItems.forEach((item, index) => {
         expect(item).toHaveTextContent(resultsMock[index].name);
       });

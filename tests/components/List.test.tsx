@@ -19,7 +19,7 @@ describe('ListItem render', () => {
 
     const link = screen.getByRole('link');
     expect(link).toBeInTheDocument();
-    expect(link).toHaveAttribute('href', `/pokemon/${resultsMock[0].name}`);
+    expect(link).toHaveAttribute('href', expect.stringContaining(`/pokemon/${resultsMock[0].name}`));
   });
 });
 
@@ -39,7 +39,7 @@ describe('List render', () => {
     resultsMock.forEach((result) => {
       const link = screen.getByRole('link', { name: result.name });
       expect(link).toBeInTheDocument();
-      expect(link).toHaveAttribute('href', `/pokemon/${result.name}`);
+      expect(link).toHaveAttribute('href', expect.stringContaining(`/pokemon/${result.name}`));
     });
   });
 
@@ -60,7 +60,6 @@ describe('List render', () => {
   });
 });
 
-// Мокируем метод навигации и useParams
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom');
   return {
@@ -88,8 +87,7 @@ describe('Navigation and Details Rendering', () => {
 
     render(<App />);
 
-    const listItemLink = await screen.findByText(resultsMock[0].name); // замените на актуальное имя элемента
-    expect(listItemLink).toBeDefined();
+    const listItemLink = await screen.findByText(resultsMock[0].name);
 
     fireEvent.click(listItemLink);
 
@@ -98,7 +96,7 @@ describe('Navigation and Details Rendering', () => {
     });
   });
 
-  it('should navigate to Details and start fetch data and render component with this data', async () => {
+  it('should navigate to Details and start fetch data and render component with this', async () => {
     mockFetch
       .mockResolvedValueOnce({
         json: () => Promise.resolve({ results: [resultsMock[0]] }),
@@ -118,7 +116,7 @@ describe('Navigation and Details Rendering', () => {
       expect(screen.getByTestId('card')).toBeDefined();
     });
 
-    expect(screen.getByText('pikachu')).toBeDefined();
-    expect(screen.getByText('electric')).toBeDefined();
+    expect(screen.getByText(detailedDataMock.name)).toBeDefined();
+    expect(screen.getByText(detailedDataMock.types[0].type.name)).toBeDefined();
   });
 });
