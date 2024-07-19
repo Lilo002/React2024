@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useNavigateMethods } from '../../hooks/useNavigateMethods';
 import './buttons.scss';
+
 type ButtonsProps = {
   isPrevBtnDisabled: boolean;
   isNextBtnDisabled: boolean;
