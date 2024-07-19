@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 
-type ToggleThemeContextType = () => void;
+type ToggleThemeContextType = (isLightTheme: boolean) => void;
 
 export const ThemeContext = createContext(true);
 

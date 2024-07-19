@@ -2,11 +2,10 @@ import { ReactNode, useState } from 'react';
 import { ThemeContext, ToggleThemeContext } from '../../context/context';
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [lightTheme, setLightTheme] = useState(false);
+  const [lightTheme, setDarkTheme] = useState(false);
 
-  const toggleTheme = () => {
-    console.log('switch');
-    setLightTheme((prev) => !prev);
+  const toggleTheme = (isLightTheme: boolean) => {
+    setDarkTheme(isLightTheme);
   };
 
   return (

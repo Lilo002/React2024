@@ -7,7 +7,7 @@ export function ThemeSwitcher() {
   const toggleTheme = UseToggleThemeContext();
 
   useEffect(() => {
-    toggleTheme();
+    toggleTheme(isChecked);
   }, [isChecked]);
 
   return (
