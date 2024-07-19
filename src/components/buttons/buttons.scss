@@ -2,9 +2,9 @@
   display: flex;
   gap: 10px;
   .button {
-    background-color: #737373;
+    background-color: var(--background-btn-color);
     border-radius: 4px;
-    color: #dbdbdb;
+    color: var(--text-color);
     cursor: pointer;
     width: 60px;
     height: 30px;
@@ -17,7 +17,7 @@
     }
     &.disabled {
       cursor: inherit;
-      background-color: #383838;
+      background-color: var(--background-btn-disabled);
     }
   }
 }
