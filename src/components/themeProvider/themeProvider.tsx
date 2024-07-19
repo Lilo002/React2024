@@ -11,9 +11,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   return (
     <ThemeContext.Provider value={lightTheme}>
-      <ToggleThemeContext.Provider value={toggleTheme}>
-        {children}
-      </ToggleThemeContext.Provider>
+      <ToggleThemeContext.Provider value={toggleTheme}>{children}</ToggleThemeContext.Provider>
     </ThemeContext.Provider>
   );
 }
