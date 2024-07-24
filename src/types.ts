@@ -5,7 +5,7 @@ export type ResponseItem = {
   url: string;
 };
 
-export type SearchItem = {
+export type Pokemon = {
   base_experience?: number;
   cries?: {
     latest: string;

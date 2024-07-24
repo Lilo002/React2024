@@ -4,18 +4,22 @@ import { Layout } from '../layout/layout';
 import { Details } from '../components/details/details';
 import { ErrorPage } from '../components/404/404';
 import { ThemeProvider } from '../components/themeProvider/themeProvider';
+import { Provider } from 'react-redux';
+import { store } from '../store/store';
 
 export function App() {
   return (
-    <ThemeProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route path="pokemon/:id" element={<Details />} />
-          </Route>
-          <Route path="*" element={<ErrorPage />} />
-        </Routes>
-      </Router>
-    </ThemeProvider>
+    <Provider store={store}>
+      <ThemeProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route path="pokemon/:id" element={<Details />} />
+            </Route>
+            <Route path="*" element={<ErrorPage />} />
+          </Routes>
+        </Router>
+      </ThemeProvider>
+    </Provider>
   );
 }
