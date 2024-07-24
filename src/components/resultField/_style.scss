@@ -1,6 +1,6 @@
 .results {
   width: 100%;
-  padding: 20px;
+  padding: 40px 20px 100px 20px;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -36,7 +36,7 @@
   &-item {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
   }
   &-empty {
     text-align: center;
@@ -55,16 +55,6 @@
     text-shadow: 1px 1px 1px var(--text-shadow);
     border-radius: 3px;
     padding-left: 5px;
-    &::after {
-      position: absolute;
-      height: 20px;
-      width: 20px;
-      top: 50%;
-      left: -25px;
-      transform: translateY(-50%);
-      content: '';
-      background: url(../../assets/pikachu.ico) center center / cover;
-    }
     &.active {
       background: var(--link-active);
     }
