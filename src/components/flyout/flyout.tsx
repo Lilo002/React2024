@@ -3,6 +3,7 @@ import { removeAll } from '../../store/flyout/flyoutSlice';
 import { RootState } from '../../store/store';
 
 import './flyout.scss';
+import { convertToCSV } from './ui/convertToCsv';
 
 export const Flyout: React.FC = () => {
   const dispatch = useDispatch();
@@ -15,7 +16,9 @@ export const Flyout: React.FC = () => {
           Unselect all
         </button>
         <span className="flyout-text">{`${data.length} items are selected`}</span>
-        <button className="flyout-btn button">Download</button>
+        <a className="flyout-btn button" href={convertToCSV(data)} download={`${data.length}-pokemon.csv`}>
+          Download
+        </a>
       </div>
     )
   );
