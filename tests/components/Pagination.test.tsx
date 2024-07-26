@@ -1,18 +1,25 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { Buttons } from '../../src/components/buttons/buttons';
+import { setupServer } from 'msw/node';
+import { handlers } from '../mocks';
+import { renderWithProviders } from '../test-utils';
+
+const server = setupServer(...handlers);
 
 describe('Buttons', () => {
-  beforeEach(() => {
-    vi.resetAllMocks();
-  });
+  beforeAll(() => server.listen());
 
+  afterEach(() => server.resetHandlers());
+
+  afterAll(() => server.close());
   it('buttons should change page value', async () => {
-    render(
+    renderWithProviders(
       <BrowserRouter>
         <Buttons isPrevBtnDisabled={false} isNextBtnDisabled={false} />
       </BrowserRouter>,
     );
+
     const nextLink = screen.getByText('next');
     const prevLink = screen.getByText('prev');
 
