@@ -5,11 +5,11 @@ import { Details } from '../components/details/details';
 import { ErrorPage } from '../components/404/404';
 import { ThemeProvider } from '../components/themeProvider/themeProvider';
 import { Provider } from 'react-redux';
-import { store } from '../store/store';
+import { setupStore } from '../store/store';
 
 export function App() {
   return (
-    <Provider store={store}>
+    <Provider store={setupStore()}>
       <ThemeProvider>
         <Router>
           <Routes>

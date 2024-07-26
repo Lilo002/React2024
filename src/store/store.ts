@@ -1,13 +1,20 @@
-import { configureStore } from '@reduxjs/toolkit/react';
+import { combineReducers, configureStore } from '@reduxjs/toolkit/react';
 import { pokemonApi } from './api/api';
 import { flyout } from './flyout/flyoutSlice';
 
-export const store = configureStore({
-  reducer: {
-    [pokemonApi.reducerPath]: pokemonApi.reducer,
-    flyout: flyout,
-  },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(pokemonApi.middleware),
+const rootReducer = combineReducers({
+  [pokemonApi.reducerPath]: pokemonApi.reducer,
+  flyout: flyout,
 });
 
-export type RootState = ReturnType<typeof store.getState>;
+export const setupStore = (preloadedState?: Partial<RootState>) => {
+  return configureStore({
+    reducer: rootReducer,
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(pokemonApi.middleware),
+    preloadedState,
+  });
+};
+
+export type RootState = ReturnType<typeof rootReducer>;
+export type AppStore = ReturnType<typeof setupStore>;
+export type AppDispatch = AppStore['dispatch'];

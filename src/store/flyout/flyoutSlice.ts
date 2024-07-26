@@ -8,8 +8,8 @@ const flyoutSlice = createSlice({
     addPokemon(state, action: PayloadAction<Pokemon>) {
       state.push(action.payload);
     },
-    removePokemon(state, action: PayloadAction<Pokemon['id']>) {
-      return state.filter((pokemon) => pokemon.id !== action.payload);
+    removePokemon(state, action: PayloadAction<Pokemon['name']>) {
+      return state.filter((pokemon) => pokemon.name !== action.payload);
     },
     removeAll() {
       return [];
