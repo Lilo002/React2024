@@ -10,7 +10,9 @@ export function Details() {
 
   const { createSearchParams, getPageValue, navigateToMainPage } = useNavigateMethods();
 
-  const { data, isFetching, isError } = useGetPokemonByNameQuery(id ?? '');
+  const { data, isFetching, isError } = useGetPokemonByNameQuery(id ?? '', {
+    skip: !id,
+  });
 
   if (isError) navigateToMainPage();
 

@@ -11,8 +11,8 @@ export const Flyout: React.FC = () => {
 
   return (
     data.length > 0 && (
-      <div className="flyout">
-        <button className="flyout-btn button" onClick={() => dispatch(removeAll())}>
+      <div className="flyout" data-testid="flyout">
+        <button className="flyout-btn button" data-testid="unselect" onClick={() => dispatch(removeAll())}>
           Unselect all
         </button>
         <span className="flyout-text">{`${data.length} items are selected`}</span>

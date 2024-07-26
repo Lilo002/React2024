@@ -15,7 +15,6 @@ export function ResultField() {
 
   const page = useMemo(() => getPageValue(), [getPageValue]);
   const searchValue = useMemo(() => getSearchValue().trim().toLowerCase(), [getSearchValue]);
-
   const { data: allPokemon, isFetching: isAllLoading } = useGetAllPokemonQuery(page);
   const {
     data: searchedPokemon,
