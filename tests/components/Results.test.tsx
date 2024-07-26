@@ -1,24 +1,22 @@
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { describe, it, expect } from 'vitest';
+import { screen, waitFor } from '@testing-library/react';
 import { ResultField } from '../../src/components/resultField/ResultField';
 import { BrowserRouter } from 'react-router-dom';
-import { resultsMock } from '../mocks';
+import { handlers, resultsMock } from '../mocks';
+import { setupServer } from 'msw/node';
+import { renderWithProviders } from '../test-utils';
+
+const server = setupServer(...handlers);
 
 describe('ResultField', () => {
-  const mockFetch = vi.fn();
+  beforeAll(() => server.listen());
 
-  beforeEach(() => {
-    globalThis.fetch = mockFetch;
-  });
+  afterEach(() => server.resetHandlers());
 
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
+  afterAll(() => server.close());
 
   it('show loader if data is loading', async () => {
-    vi.mocked(fetch).mockImplementation(() => new Promise(() => {}));
-
-    render(
+    renderWithProviders(
       <BrowserRouter>
         <ResultField />
       </BrowserRouter>,
@@ -29,15 +27,13 @@ describe('ResultField', () => {
   });
 
   it('show card with data and remove loader if data loaded', async () => {
-    vi.mocked(fetch).mockResolvedValueOnce({
-      json: async () => ({ results: resultsMock }),
-    } as Response);
-
-    render(
+    renderWithProviders(
       <BrowserRouter>
         <ResultField />
       </BrowserRouter>,
     );
+
+    expect(screen.getByTestId('loader')).toBeDefined();
 
     await waitFor(() => {
       const listItems = screen.getAllByTestId('result-item');
