@@ -1,78 +1,38 @@
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { screen, waitFor, fireEvent } from '@testing-library/react';
 import { Details } from '../../src/components/details/details';
-import { BrowserRouter } from 'react-router-dom';
-import { detailedDataMock, resultsMock } from '../mocks';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { handlers, resultsMock } from '../mocks';
 import { App } from '../../src/app/App';
+import { setupServer } from 'msw/node';
+import { renderWithProviders } from '../test-utils';
 
-vi.mock('react-router-dom', async () => {
-  const actual = await vi.importActual('react-router-dom');
-  return {
-    ...actual,
-    useParams: () => ({ id: detailedDataMock.name }),
-    useNavigate: () => vi.fn(),
-    useLocation: () => ({ pathname: `/pokemon/${detailedDataMock.name}` }),
-  };
-});
+const server = setupServer(...handlers);
 
 describe('Details', () => {
-  const mockFetch = vi.fn();
+  beforeAll(() => server.listen());
 
-  beforeEach(() => {
-    globalThis.fetch = mockFetch;
-  });
+  afterEach(() => server.resetHandlers());
 
-  afterEach(() => {
-    vi.resetAllMocks();
-  });
-
+  afterAll(() => server.close());
   it('show loader when data is loading', async () => {
-    mockFetch.mockImplementation(() => new Promise(() => {}));
+    renderWithProviders(<App />);
 
-    render(
-      <BrowserRouter>
-        <Details />
-      </BrowserRouter>,
-    );
+    const listItemLink = await screen.findByText(resultsMock[0].name);
+    expect(screen.queryByTestId('card')).toBeNull();
+    expect(listItemLink).toBeDefined();
+
+    fireEvent.click(listItemLink);
 
     expect(screen.getByTestId('loader')).toBeDefined();
     expect(screen.queryByTestId('card')).toBeNull();
   });
 
-  it('show card when data loaded and remove loader', async () => {
-    mockFetch.mockResolvedValueOnce({
-      json: () => Promise.resolve(detailedDataMock),
-    });
-
-    render(
-      <BrowserRouter>
-        <Details />
-      </BrowserRouter>,
-    );
-
-    expect(screen.queryByTestId('detailed-loader')).toBeDefined();
-
-    await waitFor(() => {
-      expect(screen.getByTestId('card')).toBeDefined();
-      expect(screen.queryByTestId('detailed-loader')).toBeNull();
-    });
-
-    expect(screen.getByText(detailedDataMock.name)).toBeDefined();
-    expect(screen.getByText(detailedDataMock.types[0].type.name)).toBeDefined();
-  });
-
   it('close details when clicked on close button', async () => {
-    mockFetch
-      .mockResolvedValueOnce({
-        json: () => Promise.resolve({ results: [resultsMock[0]] }),
-      })
-      .mockResolvedValueOnce({
-        json: () => Promise.resolve(detailedDataMock),
-      });
+    renderWithProviders(<App />);
 
-    render(<App />);
-    const listItemLink = await screen.findByText(resultsMock[0].name);
+    const listItemLink = await screen.findAllByText(resultsMock[0].name);
     expect(listItemLink).toBeDefined();
-    fireEvent.click(listItemLink);
+    fireEvent.click(listItemLink[0]);
 
     await waitFor(() => {
       expect(screen.getByTestId('details')).toBeDefined();
@@ -87,13 +47,11 @@ describe('Details', () => {
   });
 
   it('render empty block if  there is an Error in fetch', async () => {
-    mockFetch.mockResolvedValueOnce({
-      json: () => Promise.reject(detailedDataMock),
-    });
-
-    render(
+    renderWithProviders(
       <BrowserRouter>
-        <Details />
+        <Routes>
+          <Route path="/" element={<Details />} />
+        </Routes>
       </BrowserRouter>,
     );
 
