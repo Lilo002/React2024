@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import { SearchItem } from '../../types';
+import { useEffect, useState } from 'react';
+import { Pokemon } from '../../types';
 import { Loader } from '../loader/loader';
 
 type CardProps = {
-  data: SearchItem;
+  data: Pokemon;
 };
 
 export function Card({ data }: CardProps) {
@@ -19,6 +19,10 @@ export function Card({ data }: CardProps) {
     weight,
     height,
   } = data;
+
+  useEffect(() => {
+    setIsImageLoaded(false);
+  }, [data]);
 
   const handleImageLoad = () => {
     setIsImageLoaded(true);

@@ -1,0 +1,17 @@
+.flyout {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px;
+  color: var(--text-color);
+  background-color: var(--header-color);
+  &-btn {
+    width: 120px;
+    height: 40px;
+    border: none;
+  }
+}

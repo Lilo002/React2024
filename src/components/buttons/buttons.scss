@@ -1,23 +1,28 @@
 .left-buttons {
   display: flex;
   gap: 10px;
-  .button {
-    background-color: #737373;
-    border-radius: 4px;
-    color: #dbdbdb;
-    cursor: pointer;
-    width: 60px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    &[disabled] {
-      cursor: initial;
-    }
-    &.disabled {
-      cursor: inherit;
-      background-color: #383838;
-    }
+}
+
+.button {
+  background-color: var(--background-btn-color);
+  border-radius: 4px;
+  color: var(--text-color);
+  cursor: pointer;
+  width: 60px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: all 0.3s;
+  &[disabled] {
+    cursor: initial;
+  }
+  &.disabled {
+    cursor: inherit;
+    background-color: var(--background-btn-disabled);
+  }
+  &:hover {
+    background-color: var(--background-btn-disabled);
   }
 }

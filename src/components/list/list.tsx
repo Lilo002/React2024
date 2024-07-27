@@ -1,9 +1,9 @@
-import { ResponseItem, SearchItem } from '../../types';
+import { ResponseItem, Pokemon } from '../../types';
 import { ListItem } from '../listItem/listItem';
 import image from '../../assets/empty.png';
 
 type ListItemProps = {
-  results: SearchItem[] | ResponseItem[] | null;
+  results: Pokemon[] | ResponseItem[] | null;
 };
 
 export function List({ results }: ListItemProps) {

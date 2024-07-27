@@ -4,6 +4,7 @@ import './_style.scss';
 import { useSearchQuery } from '../../hooks/useSearchQuery';
 import { useNavigate } from 'react-router-dom';
 import { useNavigateMethods } from '../../hooks/useNavigateMethods';
+import { ThemeSwitcher } from '../themeSwitcher/themeSwitcher';
 
 export function SearchField() {
   const { searchQuery, setSearchQuery } = useSearchQuery();
@@ -50,6 +51,7 @@ export function SearchField() {
           Search
         </button>
       </form>
+      <ThemeSwitcher />
     </div>
   );
 }
