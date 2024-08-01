@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { Pokemon, ResponseItem } from '../../types';
+import { Pokemon, ResponseItem } from '../../types/types';
 import { LIMIT, OFFSET, URL } from '../../constant';
 
 export const pokemonApi = createApi({
@@ -16,4 +16,9 @@ export const pokemonApi = createApi({
   }),
 });
 
-export const { useGetAllPokemonQuery, useGetPokemonByNameQuery } = pokemonApi;
+export const {
+  useGetPokemonByNameQuery,
+  useGetAllPokemonQuery,
+  util: { getRunningQueriesThunk },
+} = pokemonApi;
+export const { getPokemonByName, getAllPokemon } = pokemonApi.endpoints;
