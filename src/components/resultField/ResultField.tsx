@@ -1,4 +1,3 @@
-import './_style.scss';
 import { MouseEvent, useMemo, useRef } from 'react';
 import { LIMIT } from '../../constant';
 import { useNavigateMethods } from '../../hooks/useNavigateMethods';
@@ -8,14 +7,15 @@ import { Loader } from '../loader/loader';
 import { useGetAllPokemonQuery, useGetPokemonByNameQuery } from '../../store/api/api';
 import { Flyout } from '../flyout/flyout';
 
-export function ResultField() {
-  const { navigateToMainPage, getPageValue, getSearchValue } = useNavigateMethods();
+export default function ResultField() {
+  const { navigateToMainPage, getSearchValue, getPageValue } = useNavigateMethods();
 
   const list = useRef(null);
 
   const page = useMemo(() => getPageValue(), [getPageValue]);
   const searchValue = useMemo(() => getSearchValue().trim().toLowerCase(), [getSearchValue]);
-  const { data: allPokemon, isFetching: isAllLoading } = useGetAllPokemonQuery(page);
+
+  const { data: allPokemon, isFetching: isAllLoading } = useGetAllPokemonQuery(page, { skip: !!searchValue });
   const {
     data: searchedPokemon,
     isFetching: isSearchLoading,
@@ -31,7 +31,7 @@ export function ResultField() {
     return allPokemon ? allPokemon : null;
   }, [searchValue, searchedPokemon, allPokemon, isSearchError]);
 
-  const isDataLoaded = !isAllLoading && !isSearchLoading;
+  const isDataLoaded = searchValue ? !isSearchLoading : !isAllLoading;
 
   const returnToMainPage = (e: MouseEvent<HTMLElement>) => {
     if (e.target instanceof Node && e.target.contains(list.current)) {
