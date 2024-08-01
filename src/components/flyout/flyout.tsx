@@ -1,8 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { removeAll } from '../../store/flyout/flyoutSlice';
 import { RootState } from '../../store/store';
-
-import './flyout.scss';
 import { convertToCSV } from './ui/convertToCsv';
 
 export const Flyout: React.FC = () => {

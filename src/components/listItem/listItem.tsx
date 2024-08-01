@@ -1,9 +1,8 @@
-import { NavLink } from 'react-router-dom';
-import { ResponseItem, Pokemon } from '../../types';
+import { ResponseItem, Pokemon } from '../../types/types';
 import { useNavigateMethods } from '../../hooks/useNavigateMethods';
 import { Checkbox } from './ui/checkbox';
 
-import './listItem.scss';
+import Link from 'next/link';
 
 export function ListItem({ data }: { data: Pokemon | ResponseItem }) {
   const { createSearchParams, getPageValue } = useNavigateMethods();
@@ -11,14 +10,14 @@ export function ListItem({ data }: { data: Pokemon | ResponseItem }) {
   return (
     <li className="results-item">
       <Checkbox name={data.name} />
-      <NavLink
+      <Link
         replace
-        to={{ pathname: `/pokemon/${data.name}`, search: createSearchParams(getPageValue()) }}
+        href={{ pathname: `/pokemon/${data.name}`, search: createSearchParams(getPageValue()) }}
         className="results-link"
         data-testid="result-item"
       >
         {data.name}
-      </NavLink>
+      </Link>
     </li>
   );
 }

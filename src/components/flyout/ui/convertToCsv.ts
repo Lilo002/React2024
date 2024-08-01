@@ -1,4 +1,4 @@
-import { Pokemon } from '../../../types';
+import { Pokemon } from '../../../types/types';
 
 export const convertToCSV = (data: Pokemon[]): string => {
   const headers = ['Name', 'Image URL', 'Types', 'Weight', 'Height'];

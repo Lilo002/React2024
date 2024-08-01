@@ -1,5 +1,5 @@
 import { Component, ErrorInfo, ReactNode } from 'react';
-import './_error.scss';
+import style from './_error.module.scss';
 
 type ErrorState = {
   hasError: boolean;
