@@ -1,5 +1,5 @@
 import { http, delay, HttpResponse } from 'msw';
-import { ResponseItem } from '../src/types';
+import { ResponseItem } from '../src/types/types';
 import { UseGetPokemonByNameQueryResult, UseGetAllPokemonQueryResult } from './types';
 
 export const resultsMock: ResponseItem[] = [
@@ -9,58 +9,6 @@ export const resultsMock: ResponseItem[] = [
   },
   {
     name: 'ivysaur',
-    url: 'https://pokeapi.co/api/v2/pokemon/11/',
-  },
-  {
-    name: 'venusaur',
-    url: 'https://pokeapi.co/api/v2/pokemon/11/',
-  },
-  {
-    name: 'charmander',
-    url: 'https://pokeapi.co/api/v2/pokemon/11/',
-  },
-  {
-    name: 'charmeleon',
-    url: 'https://pokeapi.co/api/v2/pokemon/11/',
-  },
-  {
-    name: 'charizard',
-    url: 'https://pokeapi.co/api/v2/pokemon/11/',
-  },
-  {
-    name: 'squirtle',
-    url: 'https://pokeapi.co/api/v2/pokemon/11/',
-  },
-  {
-    name: 'wartortle',
-    url: 'https://pokeapi.co/api/v2/pokemon/11/',
-  },
-  {
-    name: 'blastoise',
-    url: 'https://pokeapi.co/api/v2/pokemon/11/',
-  },
-  {
-    name: 'caterpie',
-    url: 'https://pokeapi.co/api/v2/pokemon/11/',
-  },
-  {
-    name: 'metapod',
-    url: 'https://pokeapi.co/api/v2/pokemon/11/',
-  },
-  {
-    name: 'butterfree',
-    url: 'https://pokeapi.co/api/v2/pokemon/11/',
-  },
-  {
-    name: 'weedle',
-    url: 'https://pokeapi.co/api/v2/pokemon/11/',
-  },
-  {
-    name: 'kakuna',
-    url: 'https://pokeapi.co/api/v2/pokemon/11/',
-  },
-  {
-    name: 'beedrill',
     url: 'https://pokeapi.co/api/v2/pokemon/11/',
   },
 ];
