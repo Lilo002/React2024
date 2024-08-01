@@ -10,7 +10,7 @@ export const convertToCSV = (data: Pokemon[]): string => {
     pokemon.height.toString(),
   ]);
 
-  const сontent = [headers.join(','), ...rows.map((row) => row.join(','))].join('\n');
+  const content = [headers.join(','), ...rows.map((row) => row.join(','))].join('\n');
 
-  return 'data:text/csv;charset=utf-8,' + encodeURIComponent(сontent);
+  return 'data:text/csv;charset=utf-8,' + encodeURIComponent(content);
 };
