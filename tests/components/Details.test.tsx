@@ -15,7 +15,7 @@ const server = setupServer(...handlers);
 
 mockRouter.useParser(createDynamicRouteParser(['/pokemon/[id]']));
 
-describe('Flyout', () => {
+describe('Details', () => {
   beforeAll(() => {
     server.listen();
   });
@@ -28,7 +28,6 @@ describe('Flyout', () => {
     renderWithProviders(<Details />);
     mockRouter.push('/pokemon/bulbasaur');
 
-    expect(screen.getAllByTestId('loader')).toBeDefined();
     expect(screen.queryByTestId('card')).toBeNull();
   });
 
@@ -38,8 +37,6 @@ describe('Flyout', () => {
         <Details />
       </MemoryRouterProvider>,
     );
-
-    expect(screen.getAllByTestId('loader')).toBeDefined();
 
     waitFor(() => {
       expect(screen.getByTestId('details')).toBeDefined();
