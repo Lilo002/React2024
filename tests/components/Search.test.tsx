@@ -1,11 +1,18 @@
-import { screen, fireEvent } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
+import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { SearchField } from '../../src/components/searchField/SearchFiled';
 import { setupServer } from 'msw/node';
 import { renderWithProviders } from '../test-utils';
-import { handlers } from '../mocks';
+import { detailedDataMock, handlers } from '../mocks';
+import { describe, beforeAll, afterEach, afterAll, it, expect, vi } from 'vitest';
+import mockRouter from 'next-router-mock';
 
+import { createDynamicRouteParser } from 'next-router-mock/dynamic-routes';
+import { MemoryRouterProvider } from 'next-router-mock/dist/MemoryRouterProvider';
+
+vi.mock('next/router', () => require('next-router-mock'));
 const server = setupServer(...handlers);
+
+mockRouter.useParser(createDynamicRouteParser(['/pokemon/[id]']));
 
 describe('SearchField', () => {
   beforeAll(() => server.listen());
@@ -14,33 +21,21 @@ describe('SearchField', () => {
 
   afterAll(() => server.close());
 
-  it('saves the entered value to local storage when Search button is clicked', () => {
+  it('after submit start render new results', async () => {
     renderWithProviders(
-      <BrowserRouter>
+      <MemoryRouterProvider url="/">
         <SearchField />
-      </BrowserRouter>,
+      </MemoryRouterProvider>,
     );
 
     const input = screen.getByPlaceholderText('Enter number or name');
     const button = screen.getByText('Search');
 
-    fireEvent.change(input, { target: { value: 'pikachu' } });
+    fireEvent.change(input, { target: { value: detailedDataMock.name } });
     fireEvent.click(button);
 
-    expect(localStorage.getItem('lilo-value')).toBe('pikachu');
-  });
-
-  it('retrieves the value from local storage upon mounting', () => {
-    localStorage.setItem('lilo-value', 'pikachu');
-
-    renderWithProviders(
-      <BrowserRouter>
-        <SearchField />
-      </BrowserRouter>,
-    );
-
-    const input = screen.getByRole('textbox') as HTMLInputElement;
-
-    expect(input.value).toBe('pikachu');
+    waitFor(() => {
+      expect(screen.getByText(detailedDataMock.types[0].type.name)).toBeDefined();
+    });
   });
 });
