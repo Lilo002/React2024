@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next';
 import { pokemonApi } from '../store/api/api';
 import { wrapper } from '../store/store';
-import { Layout } from './layout';
+import Layout from './layout';
 
 export default function Main() {
   return <Layout children={null} />;

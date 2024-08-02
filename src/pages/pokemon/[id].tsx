@@ -2,7 +2,7 @@ import { useNavigateMethods } from '../../hooks/useNavigateMethods';
 import { Card } from '../../components/card/Card';
 import { Loader } from '../../components/loader/loader';
 import { pokemonApi, useGetPokemonByNameQuery } from '../../store/api/api';
-import { Layout } from '../layout';
+import Layout from '../layout';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { skipToken } from '@reduxjs/toolkit/query';
