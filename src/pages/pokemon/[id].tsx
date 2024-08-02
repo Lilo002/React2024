@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import { skipToken } from '@reduxjs/toolkit/query';
 import { GetServerSideProps } from 'next';
 import { wrapper } from '../../store/store';
+import { useEffect, useState } from 'react';
 
 export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps((store) => async (context) => {
   const page = Number(context.query.page) || 1;
@@ -35,13 +36,27 @@ export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps
 
 export default function Details() {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const { createSearchParams, navigateToMainPage, getPageValue } = useNavigateMethods();
 
   const { id } = router.query;
 
+  useEffect(() => {
+    const handleStart = () => {
+      setIsLoading(true);
+    };
+
+    router.events.on('routeChangeStart', handleStart);
+
+    return () => {
+      router.events.off('routeChangeStart', handleStart);
+      setIsLoading(false);
+    };
+  }, [router]);
+
   const result = useGetPokemonByNameQuery(typeof id === 'string' ? id : skipToken);
 
-  const { isFetching: isLoading, isError, data } = result;
+  const { isError, data } = result;
 
   if (isError) navigateToMainPage();
 

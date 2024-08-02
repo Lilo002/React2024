@@ -1,4 +1,4 @@
-import { MouseEvent, useMemo, useRef } from 'react';
+import { MouseEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { LIMIT } from '../../constant';
 import { useNavigateMethods } from '../../hooks/useNavigateMethods';
 import { Buttons } from '../buttons/buttons';
@@ -6,21 +6,19 @@ import { List } from '../list/list';
 import { Loader } from '../loader/loader';
 import { useGetAllPokemonQuery, useGetPokemonByNameQuery } from '../../store/api/api';
 import { Flyout } from '../flyout/flyout';
+import { useRouter } from 'next/router';
 
 export default function ResultField() {
   const { navigateToMainPage, getSearchValue, getPageValue } = useNavigateMethods();
-
+  const router = useRouter();
+  const [isDataLoaded, setIsDataLoaded] = useState(true);
   const list = useRef(null);
 
-  const page = useMemo(() => getPageValue(), [getPageValue]);
+  const pageValue = useMemo(() => getPageValue(), [getPageValue]);
   const searchValue = useMemo(() => getSearchValue().trim().toLowerCase(), [getSearchValue]);
 
-  const { data: allPokemon, isFetching: isAllLoading } = useGetAllPokemonQuery(page, { skip: !!searchValue });
-  const {
-    data: searchedPokemon,
-    isFetching: isSearchLoading,
-    isError: isSearchError,
-  } = useGetPokemonByNameQuery(searchValue, {
+  const { data: allPokemon } = useGetAllPokemonQuery(pageValue, { skip: !!searchValue });
+  const { data: searchedPokemon, isError: isSearchError } = useGetPokemonByNameQuery(searchValue, {
     skip: !searchValue,
   });
 
@@ -31,17 +29,36 @@ export default function ResultField() {
     return allPokemon ? allPokemon : null;
   }, [searchValue, searchedPokemon, allPokemon, isSearchError]);
 
-  const isDataLoaded = searchValue ? !isSearchLoading : !isAllLoading;
-
   const returnToMainPage = (e: MouseEvent<HTMLElement>) => {
     if (e.target instanceof Node && e.target.contains(list.current)) {
       navigateToMainPage();
     }
   };
 
-  const isPrevBtnDisabled = () => !isDataLoaded || !results || page === 1;
+  const isPrevBtnDisabled = () => !isDataLoaded || !results || pageValue === 1;
 
   const isNextBtnDisabled = () => !isDataLoaded || !results || !!(results && results.length < LIMIT);
+
+  useEffect(() => {
+    const handleStart = (url: string) => {
+      const [, page] = url.split('?');
+      const pageParams = new URLSearchParams(page);
+      const newPage = pageParams.get('page');
+
+      const pageChanged = pageValue !== +newPage;
+
+      if (pageChanged) {
+        setIsDataLoaded(false);
+      }
+    };
+
+    router.events.on('routeChangeStart', handleStart);
+
+    return () => {
+      router.events.off('routeChangeStart', handleStart);
+      setIsDataLoaded(true);
+    };
+  }, [router]);
 
   return (
     <div className="results" onClick={returnToMainPage}>
