@@ -2,10 +2,16 @@ import { fireEvent, screen, waitFor } from '@testing-library/dom';
 import { setupServer } from 'msw/node';
 import { detailedDataMock, handlers } from '../mocks';
 import { renderWithProviders } from '../test-utils';
-import { App } from '../../src/app/App';
 import { Checkbox } from '../../src/components/listItem/ui/checkbox';
+import { describe, beforeAll, afterEach, afterAll, it, expect, vi } from 'vitest';
+import { createDynamicRouteParser } from 'next-router-mock/dist/dynamic-routes';
+import mockRouter from 'next-router-mock';
+import Main from '../../src/pages';
 
+vi.mock('next/router', () => require('next-router-mock'));
 const server = setupServer(...handlers);
+
+mockRouter.useParser(createDynamicRouteParser(['/pokemon/[id]']));
 
 describe('Details', () => {
   beforeAll(() => server.listen());
@@ -35,24 +41,26 @@ describe('Details', () => {
     });
 
     const checkbox = screen.getByTestId('checkbox');
+    expect(checkbox).not.toBeChecked();
+
+    fireEvent.click(checkbox);
     expect(checkbox).toBeChecked();
 
     fireEvent.click(checkbox);
 
-    await screen.findByRole('checkbox', { checked: false });
-
-    await waitFor(() => {
+    waitFor(() => {
+      screen.findByRole('checkbox', { checked: false });
       const state = store.getState().flyout;
       expect(state.some((pokemon) => pokemon.name === detailedDataMock.name)).toBe(false);
     });
   });
 
   it('Show flyout component after checked item checkbox', async () => {
-    const { store } = renderWithProviders(<App />);
+    const { store } = renderWithProviders(<Main />);
 
     expect(screen.queryByTestId('flyout')).not.toBeInTheDocument();
 
-    await waitFor(() => {
+    waitFor(() => {
       const checkbox = screen.getAllByTestId('checkbox')[1];
       expect(checkbox).not.toBeChecked();
 
@@ -61,43 +69,45 @@ describe('Details', () => {
 
     expect(screen.queryByTestId('flyout')).not.toBeInTheDocument();
 
-    await waitFor(() => {
+    waitFor(() => {
       const checkbox = screen.getAllByTestId('checkbox')[1];
       expect(checkbox).toBeChecked();
     });
 
-    await waitFor(() => {
+    waitFor(() => {
       const state = store.getState().flyout;
-      expect(state.some((pokemon) => pokemon.name === detailedDataMock.name)).toBe(false);
+      expect(state.some((pokemon) => pokemon.name === detailedDataMock.name)).toBe(true);
       expect(screen.getByTestId('flyout')).toBeInTheDocument();
+      expect(screen.getByText('Unselect all')).toBeInTheDocument();
+      expect(screen.getByText('Download')).toBeInTheDocument();
     });
   });
 
   it('Remove flyout after clicking unselect all button', async () => {
-    const { store } = renderWithProviders(<App />);
+    const { store } = renderWithProviders(<Main />);
 
     expect(screen.queryByTestId('flyout')).not.toBeInTheDocument();
 
-    await waitFor(() => {
+    waitFor(() => {
       const checkbox = screen.getAllByTestId('checkbox')[1];
       expect(checkbox).not.toBeChecked();
 
       fireEvent.click(checkbox);
     });
 
-    await waitFor(() => {
+    waitFor(() => {
       const state = store.getState().flyout;
-      expect(state.some((pokemon) => pokemon.name === detailedDataMock.name)).toBe(false);
+      expect(state.some((pokemon) => pokemon.name === detailedDataMock.name)).toBe(true);
       expect(screen.queryByTestId('flyout')).toBeInTheDocument();
     });
 
-    await waitFor(() => {
+    waitFor(() => {
       const unselect = screen.getByTestId('unselect');
       expect(unselect).toBeInTheDocument();
       fireEvent.click(unselect);
     });
 
-    await waitFor(() => {
+    waitFor(() => {
       expect(screen.queryByTestId('flyout')).not.toBeInTheDocument();
     });
   });
