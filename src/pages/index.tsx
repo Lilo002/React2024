@@ -2,9 +2,17 @@ import { GetServerSideProps } from 'next';
 import { pokemonApi } from '../store/api/api';
 import { wrapper } from '../store/store';
 import Layout from './layout';
+import Head from 'next/head';
 
 export default function Main() {
-  return <Layout children={null} />;
+  return (
+    <section>
+      <Head>
+        <title>Pokemon</title>
+      </Head>
+      <Layout children={null} />
+    </section>
+  );
 }
 
 export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps((store) => async (context) => {
