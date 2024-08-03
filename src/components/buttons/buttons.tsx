@@ -5,8 +5,9 @@ import { useRouter } from 'next/router';
 type ButtonsProps = {
   isPrevBtnDisabled: boolean;
   isNextBtnDisabled: boolean;
+  toggleLoader: () => void;
 };
-export function Buttons({ isPrevBtnDisabled, isNextBtnDisabled }: ButtonsProps) {
+export function Buttons({ isPrevBtnDisabled, isNextBtnDisabled, toggleLoader }: ButtonsProps) {
   const router = useRouter();
 
   const { createSearchParams } = useNavigateMethods();
@@ -21,12 +22,16 @@ export function Buttons({ isPrevBtnDisabled, isNextBtnDisabled }: ButtonsProps) 
 
   const goToNextPage = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
+    if (isNextBtnDisabled) return;
     router.push(nextPageUrl);
+    toggleLoader();
   };
 
   const goToPrevPage = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
+    if (isPrevBtnDisabled) return;
     router.push(prevPageUrl);
+    toggleLoader();
   };
 
   return (

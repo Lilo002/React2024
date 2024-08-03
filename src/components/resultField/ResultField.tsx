@@ -41,13 +41,9 @@ export default function ResultField() {
 
   useEffect(() => {
     const handleStart = (url: string) => {
-      const [, page] = url.split('?');
-      const pageParams = new URLSearchParams(page);
-      const newPage = pageParams.get('page');
+      const length = url.split('/').length;
 
-      const pageChanged = pageValue !== +newPage;
-
-      if (pageChanged) {
+      if (length < 3 && !router.query.id) {
         setIsDataLoaded(false);
       }
     };
@@ -56,9 +52,18 @@ export default function ResultField() {
 
     return () => {
       router.events.off('routeChangeStart', handleStart);
-      setIsDataLoaded(true);
     };
   }, [router]);
+
+  const toggleLoader = () => {
+    setIsDataLoaded(false);
+  };
+
+  useEffect(() => {
+    if (results && (isPrevBtnDisabled || isNextBtnDisabled)) {
+      setIsDataLoaded(true);
+    }
+  }, [results]);
 
   return (
     <div className="results" onClick={returnToMainPage}>
@@ -71,7 +76,11 @@ export default function ResultField() {
           </div>
         )}
       </div>
-      <Buttons isNextBtnDisabled={isNextBtnDisabled()} isPrevBtnDisabled={isPrevBtnDisabled()} />
+      <Buttons
+        isNextBtnDisabled={isNextBtnDisabled()}
+        isPrevBtnDisabled={isPrevBtnDisabled()}
+        toggleLoader={toggleLoader}
+      />
       <Flyout />
     </div>
   );
