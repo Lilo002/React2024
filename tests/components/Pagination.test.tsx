@@ -22,7 +22,7 @@ describe('Buttons', () => {
   it('buttons should change page value', async () => {
     renderWithProviders(
       <MemoryRouterProvider url="/">
-        <Buttons isPrevBtnDisabled={false} isNextBtnDisabled={false} />
+        <Buttons isPrevBtnDisabled={false} isNextBtnDisabled={false} toggleLoader={() => null} />
       </MemoryRouterProvider>,
     );
 
