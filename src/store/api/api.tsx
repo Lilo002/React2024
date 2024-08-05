@@ -1,10 +1,16 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { Pokemon, ResponseItem } from '../../types/types';
 import { LIMIT, OFFSET, URL } from '../../constant';
+import { HYDRATE } from 'next-redux-wrapper';
 
 export const pokemonApi = createApi({
   reducerPath: 'pokemonApi',
   baseQuery: fetchBaseQuery({ baseUrl: URL }),
+  extractRehydrationInfo(action, { reducerPath }) {
+    if (action.type === HYDRATE) {
+      return action.payload[reducerPath];
+    }
+  },
   endpoints: (builder) => ({
     getAllPokemon: builder.query<ResponseItem[], number>({
       query: (page) => `pokemon?limit=${LIMIT}&offset=${(page - 1) * OFFSET}`,

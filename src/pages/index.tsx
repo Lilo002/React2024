@@ -1,5 +1,5 @@
 import { GetServerSideProps } from 'next';
-import { pokemonApi } from '../store/api/api';
+import { getAllPokemon, getPokemonByName, getRunningQueriesThunk, pokemonApi } from '../store/api/api';
 import { wrapper } from '../store/store';
 import Layout from './layout';
 import Head from 'next/head';
@@ -22,17 +22,16 @@ export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps
   let pokemonList = [];
 
   if (search) {
-    await store.dispatch(pokemonApi.endpoints.getPokemonByName.initiate(search));
+    await store.dispatch(getPokemonByName.initiate(search));
   } else {
-    const listResult = await store.dispatch(pokemonApi.endpoints.getAllPokemon.initiate(page));
+    const listResult = await store.dispatch(getAllPokemon.initiate(page));
     pokemonList = listResult.data || [];
   }
 
-  const detailedPokemonPromises = pokemonList.map((pokemon) =>
-    store.dispatch(pokemonApi.endpoints.getPokemonByName.initiate(pokemon.name)),
-  );
+  const detailedPokemonPromises = pokemonList.map((pokemon) => store.dispatch(getPokemonByName.initiate(pokemon.name)));
 
   await Promise.all(detailedPokemonPromises);
+  await Promise.all(store.dispatch(getRunningQueriesThunk()));
 
   return {
     props: {},

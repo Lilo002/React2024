@@ -17,9 +17,9 @@ export default function ResultField() {
   const pageValue = useMemo(() => getPageValue(), [getPageValue]);
   const searchValue = useMemo(() => getSearchValue().trim().toLowerCase(), [getSearchValue]);
 
-  const { data: allPokemon } = useGetAllPokemonQuery(pageValue, { skip: !!searchValue });
+  const { data: allPokemon } = useGetAllPokemonQuery(pageValue, { skip: router.isFallback });
   const { data: searchedPokemon, isError: isSearchError } = useGetPokemonByNameQuery(searchValue, {
-    skip: !searchValue,
+    skip: router.isFallback,
   });
 
   const results = useMemo(() => {

@@ -1,7 +1,7 @@
 import { useNavigateMethods } from '../../hooks/useNavigateMethods';
 import { Card } from '../../components/card/Card';
 import { Loader } from '../../components/loader/loader';
-import { pokemonApi, useGetPokemonByNameQuery } from '../../store/api/api';
+import { getAllPokemon, getPokemonByName, getRunningQueriesThunk, useGetPokemonByNameQuery } from '../../store/api/api';
 import Layout from '../layout';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -17,17 +17,15 @@ export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps
   let pokemonList = [];
 
   if (search) {
-    await store.dispatch(pokemonApi.endpoints.getPokemonByName.initiate(search));
+    await store.dispatch(getPokemonByName.initiate(search));
   } else {
-    const listResult = await store.dispatch(pokemonApi.endpoints.getAllPokemon.initiate(page));
+    const listResult = await store.dispatch(getAllPokemon.initiate(page));
     pokemonList = listResult.data || [];
   }
-
-  const detailedPokemonPromises = pokemonList.map((pokemon) =>
-    store.dispatch(pokemonApi.endpoints.getPokemonByName.initiate(pokemon.name)),
-  );
+  const detailedPokemonPromises = pokemonList.map((pokemon) => store.dispatch(getPokemonByName.initiate(pokemon.name)));
 
   await Promise.all(detailedPokemonPromises);
+  await Promise.all(store.dispatch(getRunningQueriesThunk()));
 
   return {
     props: {},
@@ -54,7 +52,7 @@ export default function Details() {
     };
   }, [router]);
 
-  const result = useGetPokemonByNameQuery(typeof id === 'string' ? id : skipToken);
+  const result = useGetPokemonByNameQuery(typeof id === 'string' ? id : skipToken, { skip: router.isFallback });
 
   const { isError, data } = result;
 
