@@ -10,8 +10,8 @@ type ButtonsProps = {
 export function Buttons({ isPrevBtnDisabled, isNextBtnDisabled, toggleLoader }: ButtonsProps) {
   const router = useRouter();
 
-  const { createSearchParams } = useNavigateMethods();
-  const currentPage = +router.query.page || 1;
+  const { createSearchParams, getPageValue } = useNavigateMethods();
+  const currentPage = getPageValue();
 
   const prevPageUrl = `/?${createSearchParams(currentPage - 1)}`;
   const nextPageUrl = `/?${createSearchParams(currentPage + 1)}`;

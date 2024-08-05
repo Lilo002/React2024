@@ -25,7 +25,7 @@ export function useNavigateMethods() {
 
   const getPageValue = useCallback(() => {
     const { page } = router.query;
-    return Number(+page || 1);
+    return Number(page) || 1;
   }, [router.query.page]);
 
   const getSearchValue = useCallback(() => {

@@ -1,7 +1,7 @@
-import { combineReducers, configureStore } from '@reduxjs/toolkit/react';
+import { Action, combineReducers, configureStore, PayloadAction } from '@reduxjs/toolkit/react';
 import { pokemonApi } from './api/api';
 import { flyout } from './flyout/flyoutSlice';
-import { createWrapper } from 'next-redux-wrapper';
+import { createWrapper, HYDRATE } from 'next-redux-wrapper';
 
 const rootReducer = combineReducers({
   [pokemonApi.reducerPath]: pokemonApi.reducer,
@@ -15,7 +15,15 @@ export const setupStore = () => {
   });
 };
 
-export type RootState = ReturnType<typeof rootReducer>;
+export function isHydrateAction(action: Action): action is PayloadAction<RootState> {
+  return action.type === HYDRATE;
+}
+
+export interface RootState {
+  [pokemonApi.reducerPath]: ReturnType<typeof pokemonApi.reducer>;
+  flyout: ReturnType<typeof flyout>;
+}
+
 export type AppStore = ReturnType<typeof setupStore>;
 export type AppDispatch = AppStore['dispatch'];
 

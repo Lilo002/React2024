@@ -9,22 +9,27 @@ import { skipToken } from '@reduxjs/toolkit/query';
 import { GetServerSideProps } from 'next';
 import { wrapper } from '../../store/store';
 import { useEffect, useState } from 'react';
+import { ResponseItem } from '../../types/types';
 
 export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps((store) => async (context) => {
   const page = Number(context.query.page) || 1;
   const search = (context.query.search as string) || '';
 
-  let pokemonList = [];
+  let pokemonList: undefined | null | ResponseItem[] = [];
 
   if (search) {
     await store.dispatch(getPokemonByName.initiate(search));
   } else {
     const listResult = await store.dispatch(getAllPokemon.initiate(page));
     pokemonList = listResult.data || [];
+    if (pokemonList) {
+      const detailedPokemonPromises = pokemonList.map((pokemon) =>
+        store.dispatch(getPokemonByName.initiate(pokemon.name)),
+      );
+      await Promise.all(detailedPokemonPromises);
+    }
   }
-  const detailedPokemonPromises = pokemonList.map((pokemon) => store.dispatch(getPokemonByName.initiate(pokemon.name)));
 
-  await Promise.all(detailedPokemonPromises);
   await Promise.all(store.dispatch(getRunningQueriesThunk()));
 
   return {

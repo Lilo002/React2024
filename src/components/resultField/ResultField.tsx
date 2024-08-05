@@ -35,9 +35,9 @@ export default function ResultField() {
     }
   };
 
-  const isPrevBtnDisabled = () => !isDataLoaded || !results || pageValue === 1;
+  const isPrevBtnDisabled = !isDataLoaded || !results || pageValue === 1;
 
-  const isNextBtnDisabled = () => !isDataLoaded || !results || !!(results && results.length < LIMIT);
+  const isNextBtnDisabled = !isDataLoaded || !results || !!(results && results.length < LIMIT);
 
   useEffect(() => {
     const handleStart = (url: string) => {
@@ -77,8 +77,8 @@ export default function ResultField() {
         )}
       </div>
       <Buttons
-        isNextBtnDisabled={isNextBtnDisabled()}
-        isPrevBtnDisabled={isPrevBtnDisabled()}
+        isNextBtnDisabled={isNextBtnDisabled}
+        isPrevBtnDisabled={isPrevBtnDisabled}
         toggleLoader={toggleLoader}
       />
       <Flyout />

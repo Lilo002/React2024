@@ -2,12 +2,18 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { Pokemon, ResponseItem } from '../../types/types';
 import { LIMIT, OFFSET, URL } from '../../constant';
 import { HYDRATE } from 'next-redux-wrapper';
+import { Action, PayloadAction } from '@reduxjs/toolkit';
+import { RootState } from '../store';
+
+function isHydrateAction(action: Action): action is PayloadAction<RootState> {
+  return action.type === HYDRATE;
+}
 
 export const pokemonApi = createApi({
   reducerPath: 'pokemonApi',
   baseQuery: fetchBaseQuery({ baseUrl: URL }),
   extractRehydrationInfo(action, { reducerPath }) {
-    if (action.type === HYDRATE) {
+    if (isHydrateAction(action)) {
       return action.payload[reducerPath];
     }
   },
