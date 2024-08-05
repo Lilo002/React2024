@@ -1,5 +1,5 @@
 import { GetServerSideProps } from 'next';
-import { getAllPokemon, getPokemonByName, getRunningQueriesThunk, pokemonApi } from '../store/api/api';
+import { getAllPokemon, getPokemonByName, getRunningQueriesThunk } from '../store/api/api';
 import { wrapper } from '../store/store';
 import Layout from './layout';
 import Head from 'next/head';
