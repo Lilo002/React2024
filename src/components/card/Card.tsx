@@ -1,8 +1,4 @@
-'use client';
-
-import { useEffect, useState } from 'react';
 import { Pokemon } from '../../types/types';
-import { Loader } from '../loader/loader';
 import Image from 'next/image';
 
 type CardProps = {
@@ -10,7 +6,6 @@ type CardProps = {
 };
 
 export function Card({ data }: CardProps) {
-  const [isImageLoaded, setIsImageLoaded] = useState(false);
   const {
     name,
     sprites: {
@@ -23,26 +18,10 @@ export function Card({ data }: CardProps) {
     height,
   } = data;
 
-  useEffect(() => {
-    setIsImageLoaded(false);
-  }, [data]);
-
-  const handleImageLoad = () => {
-    setIsImageLoaded(true);
-  };
-
   return (
     <div className="card" data-testid="card">
       <div className="card-img-container">
-        {!isImageLoaded && <Loader />}
-        <Image
-          className={`card-img ${isImageLoaded ? 'loaded' : ''}`}
-          width={280}
-          height={280}
-          src={front_default}
-          alt={name}
-          onLoad={handleImageLoad}
-        />
+        <Image className={`card-img loaded`} width={280} height={280} src={front_default} alt={name} />
       </div>
       <h2 className="card-name">{name}</h2>
       <div className="card-bottom">

@@ -1,46 +1,49 @@
 import Link from 'next/link';
-import { useNavigateMethods } from '../../hooks/useNavigateMethods';
-import { useRouter } from 'next/router';
+import { createSearchParams } from '../../utils/createQueryParams';
+import { SearchParams } from '../../types/types';
 
-type ButtonsProps = {
-  isPrevBtnDisabled: boolean;
-  isNextBtnDisabled: boolean;
-  toggleLoader: () => void;
+type Props = {
+  searchParams: SearchParams;
 };
-export function Buttons({ isPrevBtnDisabled, isNextBtnDisabled, toggleLoader }: ButtonsProps) {
-  const router = useRouter();
 
-  const { createSearchParams, getPageValue } = useNavigateMethods();
-  const currentPage = getPageValue();
+export function Buttons({ searchParams }: Props) {
+  const { page, search, theme } = searchParams;
 
-  const prevPageUrl = `/?${createSearchParams(currentPage - 1)}`;
-  const nextPageUrl = `/?${createSearchParams(currentPage + 1)}`;
+  const createPrevPageUrl = () => {
+    const newPage = (Number(page) - 1).toString();
+
+    const query = {
+      page: newPage || '1',
+      search,
+      theme,
+    };
+
+    return createSearchParams(query);
+  };
+
+  const createNextPageUrl = () => {
+    const newPage = (Number(page) + 1).toString();
+
+    const query = {
+      page: newPage || '2',
+      search,
+      theme,
+    };
+
+    return createSearchParams(query);
+  };
 
   const createButtonClass = (isDisabled: boolean) => {
     return `button ${isDisabled ? 'disabled' : ''}`;
   };
 
-  const goToNextPage = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    if (isNextBtnDisabled) return;
-    router.push(nextPageUrl);
-    toggleLoader();
-  };
-
-  const goToPrevPage = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    if (isPrevBtnDisabled) return;
-    router.push(prevPageUrl);
-    toggleLoader();
-  };
-
   return (
     <div className="left-buttons">
-      <Link href={prevPageUrl} className={createButtonClass(isPrevBtnDisabled)} onClick={(e) => goToPrevPage(e)}>
+      <Link href={`/?${createPrevPageUrl()}`} className={createButtonClass(Number(page) === 1)}>
         prev
       </Link>
 
-      <Link href={nextPageUrl} className={createButtonClass(isNextBtnDisabled)} onClick={(e) => goToNextPage(e)}>
+      <Link href={`/?${createNextPageUrl()}`} className={createButtonClass(false)}>
         next
       </Link>
     </div>

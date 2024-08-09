@@ -1,18 +1,24 @@
-import { ResponseItem, Pokemon } from '../../types/types';
-import { useNavigateMethods } from '../../hooks/useNavigateMethods';
+import { ResponseItem, Pokemon, SearchParams } from '../../types/types';
+import { createSearchParams } from '../../utils/createQueryParams';
+import { getPokemonByName } from '../../utils/utils';
 import { Checkbox } from './ui/checkbox';
 
 import Link from 'next/link';
 
-export function ListItem({ data }: { data: Pokemon | ResponseItem }) {
-  const { createSearchParams, getPageValue } = useNavigateMethods();
+export const ListItem = async ({
+  data,
+  searchParams,
+}: {
+  data: Pokemon | ResponseItem;
+  searchParams: SearchParams;
+}) => {
+  const pokemon = await getPokemonByName(data.name);
 
   return (
     <li className="results-item">
-      <Checkbox name={data.name} />
+      <Checkbox data={pokemon} key={data.name} />
       <Link
-        replace
-        href={{ pathname: `/pokemon/${data.name}`, search: createSearchParams(getPageValue()) }}
+        href={`/pokemon/${pokemon.name}?${createSearchParams(searchParams)}`}
         className="results-link"
         data-testid="result-item"
       >
@@ -20,4 +26,4 @@ export function ListItem({ data }: { data: Pokemon | ResponseItem }) {
       </Link>
     </li>
   );
-}
+};

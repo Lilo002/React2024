@@ -1,6 +1,7 @@
+'use client';
 import { useDispatch, useSelector } from 'react-redux';
-import { removeAll } from '../../store/flyout/flyoutSlice';
-import { RootState } from '../../store/store';
+import { removeAll } from '../../app/GlobalRedux/flyoutSlice/flyoutSlice';
+import { RootState } from '../../app/GlobalRedux/store';
 import { convertToCSV } from './ui/convertToCsv';
 
 export const Flyout: React.FC = () => {
