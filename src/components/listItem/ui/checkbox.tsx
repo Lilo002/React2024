@@ -1,29 +1,23 @@
+'use client';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addPokemon, removePokemon } from '../../../store/flyout/flyoutSlice';
-import { useGetPokemonByNameQuery } from '../../../store/api/api';
-import { RootState } from '../../../store/store';
+import { addPokemon, removePokemon } from '../../../app/GlobalRedux/flyoutSlice/flyoutSlice';
+import { RootState } from '../../../app/GlobalRedux/store';
+import { Pokemon } from '../../../types/types';
 
 type CheckboxProps = {
-  name: string;
+  data: Pokemon;
 };
 
-export const Checkbox: React.FC<CheckboxProps> = ({ name }) => {
+export const Checkbox: React.FC<CheckboxProps> = ({ data }) => {
   const state = useSelector((state: RootState) => state.flyout);
   const [isChecked, setIsChecked] = useState(checkedIsAdded());
-  const { data, isFetching } = useGetPokemonByNameQuery(name);
 
   function checkedIsAdded() {
-    return state.some((pokemon) => pokemon.name === name);
+    return state.some((pokemon) => pokemon.name === data.name);
   }
 
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (!isFetching && data && isChecked && !checkedIsAdded()) {
-      dispatch(addPokemon(data));
-    }
-  }, [isFetching, data, isChecked, dispatch]);
 
   useEffect(() => {
     checkedIsAdded() ? setIsChecked(true) : setIsChecked(false);
@@ -32,7 +26,9 @@ export const Checkbox: React.FC<CheckboxProps> = ({ name }) => {
   const handleChange = () => {
     setIsChecked((prev) => !prev);
     if (isChecked) {
-      dispatch(removePokemon(name));
+      dispatch(removePokemon(data.name));
+    } else {
+      dispatch(addPokemon(data));
     }
   };
 
