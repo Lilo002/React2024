@@ -96,4 +96,10 @@ type Type = {
   };
 };
 
+export type SearchParams = {
+  search: string | undefined;
+  page: string | undefined;
+  theme?: string;
+};
+
 export type UseSearchQuery = [string, Dispatch<SetStateAction<string>>];
