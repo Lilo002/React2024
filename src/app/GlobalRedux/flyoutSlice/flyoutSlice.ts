@@ -1,5 +1,6 @@
+'use client';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Pokemon } from '../../types/types';
+import { Pokemon } from '../../../types/types';
 
 const flyoutSlice = createSlice({
   name: 'flyout',
