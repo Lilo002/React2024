@@ -1,12 +1,22 @@
+'use client';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { UseToggleThemeContext } from '../../hooks/useToggleThemeContext';
+import { createSearchParams } from '../../utils/createQueryParams';
 
 export function ThemeSwitcher() {
-  const [isChecked, setIsChecked] = useState(true);
-  const toggleTheme = UseToggleThemeContext();
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const page = searchParams.get('page') || '1';
+  const search = searchParams.get('search') || '';
+
+  const currentTheme = searchParams.get('theme') || 'light';
+  const [isChecked, setIsChecked] = useState(currentTheme === 'dark');
 
   useEffect(() => {
-    toggleTheme(isChecked);
+    const theme = isChecked ? 'dark' : 'light';
+    router.push(`${pathname}?${createSearchParams({ page, search, theme })}`);
   }, [isChecked]);
 
   return (
