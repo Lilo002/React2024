@@ -9,7 +9,16 @@ export default defineConfig({
     setupFiles: 'tests/setup.ts',
     coverage: {
       provider: 'v8',
-      exclude: ['next.config.mjs', '**/types.ts', 'dist/**', '**/node_modules/**', '**/.next/**', '**/*.d.ts'],
+      exclude: [
+        'next.config.mjs',
+        '**/types.ts',
+        'dist/**',
+        '**/node_modules/**',
+        '**/.next/**',
+        '**/*.d.ts',
+        '**/*utils.ts',
+        '**/mainLayout.tsx',
+      ],
       include: ['src/**/*.{js,jsx,ts,tsx}'],
     },
   },

@@ -21,12 +21,6 @@ body {
 }
 
 .app {
-  display: flex;
-  justify-content: flex-start;
-  gap: 50px;
-  align-items: center;
-  height: 100vh;
-  background: var(--background-color);
   --background-color: #ffffff;
   --background-btn-color: #ecb651;
   --background-btn-disabled: #a58c67;
@@ -53,6 +47,15 @@ body {
     --header-color: #161d2b;
     --left-panel: #1d2746;
   }
+}
+
+.app {
+  display: flex;
+  justify-content: flex-start;
+  gap: 50px;
+  align-items: center;
+  height: 100vh;
+  background: var(--background-color);
 }
 
 .left-panel {
