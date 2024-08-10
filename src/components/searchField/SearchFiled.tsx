@@ -1,29 +1,29 @@
+'use client';
 import { useState } from 'react';
-import { useNavigateMethods } from '../../hooks/useNavigateMethods';
 import { ThemeSwitcher } from '../themeSwitcher/themeSwitcher';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
+import { SearchParams } from '../../types/types';
 
-export function SearchField() {
-  const { getSearchValue, navigateToMainPage } = useNavigateMethods();
-  const [searchValue, setSearchValue] = useState(getSearchValue());
+type Props = {
+  searchParams: SearchParams;
+};
+
+export default function SearchField({ searchParams }: Props) {
+  const { search } = searchParams;
+  const [searchValue, setSearchValue] = useState(search || '');
 
   const router = useRouter();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const form = event.currentTarget;
-    const input = form.elements.namedItem('search') as HTMLInputElement;
-    const { value } = input;
     const query: { page: string; search?: string } = { page: '1' };
 
-    if (value) {
-      query.search = value;
+    if (searchValue) {
+      query.search = searchValue;
     }
 
-    router.push({
-      pathname: '/',
-      query: query,
-    });
+    const searchParams = new URLSearchParams(query).toString();
+    router.push(`/?${searchParams}`);
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,14 +31,14 @@ export function SearchField() {
   };
 
   return (
-    <div className="search" onClick={navigateToMainPage}>
+    <div className="search">
       <form onSubmit={handleSubmit} className="search-form">
         <input
           className="search-input"
+          onChange={handleInputChange}
           type="text"
           name="search"
           value={searchValue}
-          onChange={handleInputChange}
           placeholder="Enter number or name"
         />
         <button className="search-btn" type="submit">
