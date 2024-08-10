@@ -1,6 +1,5 @@
 import { http, delay, HttpResponse } from 'msw';
 import { ResponseItem } from '../src/types/types';
-import { UseGetPokemonByNameQueryResult, UseGetAllPokemonQueryResult } from './types';
 
 export const resultsMock: ResponseItem[] = [
   {
@@ -26,18 +25,6 @@ export const detailedDataMock = {
   types: [{ type: { name: 'grass' } }],
   weight: 69,
   height: 7,
-};
-
-export const mockQueryResult: Partial<UseGetPokemonByNameQueryResult> = {
-  data: detailedDataMock,
-  isFetching: true,
-  isError: false,
-};
-
-export const mockQueryAll: Partial<UseGetAllPokemonQueryResult> = {
-  data: resultsMock,
-  isFetching: true,
-  isError: false,
 };
 
 export const handlers = [

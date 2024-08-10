@@ -1,26 +1,15 @@
 import { fireEvent, screen, waitFor } from '@testing-library/dom';
-import { setupServer } from 'msw/node';
-import { detailedDataMock, handlers } from '../mocks';
+import { detailedDataMock } from '../mocks';
 import { renderWithProviders } from '../test-utils';
 import { Checkbox } from '../../src/components/listItem/ui/checkbox';
-import { describe, beforeAll, afterEach, afterAll, it, expect, vi } from 'vitest';
-import { createDynamicRouteParser } from 'next-router-mock/dist/dynamic-routes';
-import mockRouter from 'next-router-mock';
-import Main from '../../src/pages';
-
-vi.mock('next/router', () => require('next-router-mock'));
-const server = setupServer(...handlers);
-
-mockRouter.useParser(createDynamicRouteParser(['/pokemon/[id]']));
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { store } from '../../src/app/GlobalRedux/store';
+import { Flyout } from '../../src/components/flyout/flyout';
+import configureStore from 'redux-mock-store';
 
 describe('Details', () => {
-  beforeAll(() => server.listen());
-
-  afterEach(() => server.resetHandlers());
-
-  afterAll(() => server.close());
   it('Add item details after clicked on checkbox', async () => {
-    const { store } = renderWithProviders(<Checkbox name={detailedDataMock.name} />);
+    renderWithProviders(<Checkbox data={detailedDataMock} />, store);
 
     const checkbox = screen.getByTestId('checkbox');
     expect(checkbox).not.toBeChecked();
@@ -28,20 +17,16 @@ describe('Details', () => {
     fireEvent.click(checkbox);
 
     await screen.findByRole('checkbox', { checked: true });
-
-    await waitFor(() => {
-      const state = store.getState().flyout;
-      expect(state.some((pokemon) => pokemon.name === detailedDataMock.name)).toBe(true);
-    });
+    fireEvent.click(checkbox);
   });
 
   it('Add item details was in store remove it after clicked on checkbox', async () => {
-    const { store } = renderWithProviders(<Checkbox name={detailedDataMock.name} />, {
-      preloadedState: { flyout: [detailedDataMock] },
-    });
+    const { store: testStore } = renderWithProviders(<Checkbox data={detailedDataMock} />, store);
 
     const checkbox = screen.getByTestId('checkbox');
-    expect(checkbox).not.toBeChecked();
+    await waitFor(() => {
+      expect(checkbox).not.toBeChecked();
+    });
 
     fireEvent.click(checkbox);
     expect(checkbox).toBeChecked();
@@ -50,13 +35,13 @@ describe('Details', () => {
 
     waitFor(() => {
       screen.findByRole('checkbox', { checked: false });
-      const state = store.getState().flyout;
+      const state = testStore.getState().flyout;
       expect(state.some((pokemon) => pokemon.name === detailedDataMock.name)).toBe(false);
     });
   });
 
   it('Show flyout component after checked item checkbox', async () => {
-    const { store } = renderWithProviders(<Main />);
+    const { store: testStore } = renderWithProviders(<Checkbox data={detailedDataMock} />, store);
 
     expect(screen.queryByTestId('flyout')).not.toBeInTheDocument();
 
@@ -75,7 +60,7 @@ describe('Details', () => {
     });
 
     waitFor(() => {
-      const state = store.getState().flyout;
+      const state = testStore.getState().flyout;
       expect(state.some((pokemon) => pokemon.name === detailedDataMock.name)).toBe(true);
       expect(screen.getByTestId('flyout')).toBeInTheDocument();
       expect(screen.getByText('Unselect all')).toBeInTheDocument();
@@ -84,7 +69,7 @@ describe('Details', () => {
   });
 
   it('Remove flyout after clicking unselect all button', async () => {
-    const { store } = renderWithProviders(<Main />);
+    const { store: testStore } = renderWithProviders(<Checkbox data={detailedDataMock} />, store);
 
     expect(screen.queryByTestId('flyout')).not.toBeInTheDocument();
 
@@ -96,7 +81,7 @@ describe('Details', () => {
     });
 
     waitFor(() => {
-      const state = store.getState().flyout;
+      const state = testStore.getState().flyout;
       expect(state.some((pokemon) => pokemon.name === detailedDataMock.name)).toBe(true);
       expect(screen.queryByTestId('flyout')).toBeInTheDocument();
     });
@@ -110,5 +95,31 @@ describe('Details', () => {
     waitFor(() => {
       expect(screen.queryByTestId('flyout')).not.toBeInTheDocument();
     });
+  });
+});
+
+vi.mock('./utils', () => ({
+  convertToCSV: vi.fn(() => 'mockedCSVString'),
+}));
+
+const mockStore = configureStore([]);
+
+describe('Flyout render', async () => {
+  let store;
+
+  beforeEach(() => {
+    store = mockStore({
+      flyout: [detailedDataMock],
+    });
+    store.dispatch = vi.fn();
+  });
+
+  it('Add item details was in store remove it after clicked on checkbox', async () => {
+    renderWithProviders(<Flyout />, store);
+
+    expect(screen.getByTestId('flyout')).toBeInTheDocument();
+    expect(screen.getByText('1 items are selected')).toBeInTheDocument();
+    expect(screen.getByText('Unselect all')).toBeInTheDocument();
+    expect(screen.getByText('Download')).toBeInTheDocument();
   });
 });

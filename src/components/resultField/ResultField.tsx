@@ -10,8 +10,6 @@ type Props = {
 };
 
 export default async function ResultField({ searchParams }: Props) {
-  const { page } = searchParams;
-  console.log(page);
   return (
     <Suspense fallback={<Loader />}>
       <div className="results">

@@ -1,32 +1,31 @@
 import { screen, fireEvent, waitFor } from '@testing-library/react';
-import { SearchField } from '../../src/components/searchField/SearchFiled';
-import { setupServer } from 'msw/node';
 import { renderWithProviders } from '../test-utils';
-import { detailedDataMock, handlers } from '../mocks';
-import { describe, beforeAll, afterEach, afterAll, it, expect, vi } from 'vitest';
-import mockRouter from 'next-router-mock';
+import { detailedDataMock } from '../mocks';
+import { describe, it, expect, vi } from 'vitest';
 
-import { createDynamicRouteParser } from 'next-router-mock/dynamic-routes';
-import { MemoryRouterProvider } from 'next-router-mock/dist/MemoryRouterProvider';
+import { store } from '../../src/app/GlobalRedux/store';
+import SearchField from '../../src/components/searchField/SearchFiled';
 
-vi.mock('next/router', () => require('next-router-mock'));
-const server = setupServer(...handlers);
+vi.mock('next/navigation', async () => {
+  const actual = await vi.importActual('next/navigation');
+  return {
+    ...actual,
+    useRouter: vi.fn(() => ({
+      push: vi.fn(),
+      replace: vi.fn(),
+    })),
+    useSearchParams: vi.fn(() => ({
+      get: vi.fn(),
+    })),
+    usePathname: vi.fn(),
+  };
+});
 
-mockRouter.useParser(createDynamicRouteParser(['/pokemon/[id]']));
+const props = { searchParams: { page: '1', search: '', theme: 'light' } };
 
 describe('SearchField', () => {
-  beforeAll(() => server.listen());
-
-  afterEach(() => server.resetHandlers());
-
-  afterAll(() => server.close());
-
   it('after submit start render new results', async () => {
-    renderWithProviders(
-      <MemoryRouterProvider url="/">
-        <SearchField />
-      </MemoryRouterProvider>,
-    );
+    renderWithProviders(<SearchField {...props} />, store);
 
     const input = screen.getByPlaceholderText('Enter number or name');
     const button = screen.getByText('Search');

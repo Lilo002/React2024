@@ -1,6 +1,5 @@
 import { beforeAll, afterAll, describe, expect, vi, it } from 'vitest';
-import { renderWithProviders } from '../test-utils';
-import { screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { ErrorBoundary } from '../../src/errorBoundary/ErrorBoundary';
 
 const ErrorComponent = () => {
@@ -18,7 +17,7 @@ afterAll(() => {
 
 describe('ErrorBoundary', () => {
   it('Render error boundary', () => {
-    renderWithProviders(
+    render(
       <ErrorBoundary
         fallback={
           <div className="error">
