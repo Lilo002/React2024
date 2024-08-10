@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { UseToggleThemeContext } from '../../hooks/useToggleThemeContext';
-import './themeSwitcher.scss';
 
 export function ThemeSwitcher() {
   const [isChecked, setIsChecked] = useState(true);

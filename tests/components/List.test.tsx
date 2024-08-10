@@ -1,13 +1,18 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { ListItem } from '../../src/components/listItem/listItem';
 import { List } from '../../src/components/list/list';
-import { BrowserRouter } from 'react-router-dom';
 import { handlers, resultsMock } from '../mocks';
-import { App } from '../../src/app/App';
 import { setupServer } from 'msw/node';
 import { renderWithProviders } from '../test-utils';
+import { describe, beforeAll, afterEach, afterAll, it, expect, vi } from 'vitest';
+import { createDynamicRouteParser } from 'next-router-mock/dist/dynamic-routes';
+import mockRouter from 'next-router-mock';
+import Main from '../../src/pages';
 
+vi.mock('next/router', () => require('next-router-mock'));
 const server = setupServer(...handlers);
+
+mockRouter.useParser(createDynamicRouteParser(['/pokemon/[id]']));
 
 describe('Navigation and Details Rendering', () => {
   beforeAll(() => server.listen());
@@ -17,7 +22,7 @@ describe('Navigation and Details Rendering', () => {
   afterAll(() => server.close());
 
   it('should navigate to Details and render data on link click', async () => {
-    renderWithProviders(<App />);
+    renderWithProviders(<Main />);
 
     const listItemLink = await screen.findByText(resultsMock[0].name);
 
@@ -34,13 +39,9 @@ describe('ListItem render', () => {
 
   afterAll(() => server.close());
   it('should render listItem with data', async () => {
-    renderWithProviders(
-      <BrowserRouter>
-        <ListItem data={resultsMock[0]} />
-      </BrowserRouter>,
-    );
+    renderWithProviders(<ListItem data={resultsMock[0]} />);
 
-    await waitFor(() => {
+    waitFor(() => {
       const item = screen.getByRole('listitem');
       expect(item).toBeInTheDocument();
       expect(screen.getByText(resultsMock[0].name)).toBeInTheDocument;
@@ -60,13 +61,9 @@ describe('List render', () => {
   afterAll(() => server.close());
 
   it('should render list item', async () => {
-    renderWithProviders(
-      <BrowserRouter>
-        <List results={resultsMock} />
-      </BrowserRouter>,
-    );
+    renderWithProviders(<List results={resultsMock} />);
 
-    await waitFor(() => {
+    waitFor(() => {
       const list = screen.getByRole('list');
       const items = screen.getAllByRole('listitem');
       expect(list).toBeInTheDocument();
@@ -81,13 +78,9 @@ describe('List render', () => {
   });
 
   it('should render loader if there is no data', async () => {
-    renderWithProviders(
-      <BrowserRouter>
-        <List results={null} />
-      </BrowserRouter>,
-    );
+    renderWithProviders(<List results={null} />);
 
-    await waitFor(() => {
+    waitFor(() => {
       const list = screen.getByRole('list');
       const items = screen.queryAllByRole('listitem');
       const errorMessage = screen.getByText(/Oops, this Pokémon doesn't exist yet/i);

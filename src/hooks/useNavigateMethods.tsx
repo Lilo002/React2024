@@ -1,24 +1,37 @@
+import { useRouter } from 'next/router';
 import { useCallback } from 'react';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 export function useNavigateMethods() {
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const location = useLocation();
+  const router = useRouter();
 
   const createSearchParams = (page: number = 1) => {
-    const newSearchParams = new URLSearchParams(searchParams);
-    if (page) newSearchParams.set('page', page.toString());
-    return newSearchParams.toString();
+    const currentQuery = { ...router.query };
+
+    delete currentQuery.id;
+
+    if (page) currentQuery.page = page.toString();
+
+    return new URLSearchParams(currentQuery as Record<string, string>).toString();
   };
 
   const navigateToMainPage = () => {
-    if (location.pathname !== '/') navigate({ pathname: '/', search: createSearchParams(getPageValue()) });
+    if (location.pathname !== '/') {
+      router.push({
+        pathname: '/',
+        query: { page: getPageValue() },
+      });
+    }
   };
 
-  const getPageValue = useCallback(() => Number(searchParams.get('page') || 1), [searchParams]);
+  const getPageValue = useCallback(() => {
+    const { page } = router.query;
+    return Number(page) || 1;
+  }, [router.query.page]);
 
-  const getSearchValue = useCallback(() => searchParams.get('search') || '', [searchParams]);
+  const getSearchValue = useCallback(() => {
+    const { search } = router.query;
+    return search?.toString() || '';
+  }, [router.query.search]);
 
   return {
     navigateToMainPage,

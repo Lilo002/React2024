@@ -1,6 +1,7 @@
-import { ResponseItem, Pokemon } from '../../types';
+import { ResponseItem, Pokemon } from '../../types/types';
 import { ListItem } from '../listItem/listItem';
-import image from '../../assets/empty.png';
+import image from '../../../public/empty.png';
+import Image from 'next/image';
 
 type ListItemProps = {
   results: Pokemon[] | ResponseItem[] | null;
@@ -14,7 +15,7 @@ export function List({ results }: ListItemProps) {
       ) : (
         <>
           <h2 className="results-empty">Oops, this Pokémon doesn't exist yet. Try searching for another one.</h2>
-          <img src={image} alt="empty" className="results-empty-img" />
+          <Image height={300} width={300} src={image.src} alt="empty" className="results-empty-img" />
         </>
       )}
     </ul>

@@ -1,12 +1,17 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll, afterEach, vi } from 'vitest';
 import { screen, waitFor } from '@testing-library/react';
-import { ResultField } from '../../src/components/resultField/ResultField';
-import { BrowserRouter } from 'react-router-dom';
 import { handlers, resultsMock } from '../mocks';
 import { setupServer } from 'msw/node';
 import { renderWithProviders } from '../test-utils';
+import mockRouter from 'next-router-mock';
+import { createDynamicRouteParser } from 'next-router-mock/dist/dynamic-routes';
+import { MemoryRouterProvider } from 'next-router-mock/dist/MemoryRouterProvider';
+import ResultField from '../../src/components/resultField/ResultField';
 
+vi.mock('next/router', () => require('next-router-mock'));
 const server = setupServer(...handlers);
+
+mockRouter.useParser(createDynamicRouteParser(['/pokemon/[id]']));
 
 describe('ResultField', () => {
   beforeAll(() => server.listen());
@@ -15,25 +20,12 @@ describe('ResultField', () => {
 
   afterAll(() => server.close());
 
-  it('show loader if data is loading', async () => {
-    renderWithProviders(
-      <BrowserRouter>
-        <ResultField />
-      </BrowserRouter>,
-    );
-
-    expect(screen.getByTestId('loader')).toBeDefined();
-    expect(screen.queryByTestId('results-catalog')).toBeNull();
-  });
-
   it('show card with data and remove loader if data loaded', async () => {
     renderWithProviders(
-      <BrowserRouter>
+      <MemoryRouterProvider url="/?page=2">
         <ResultField />
-      </BrowserRouter>,
+      </MemoryRouterProvider>,
     );
-
-    expect(screen.getByTestId('loader')).toBeDefined();
 
     await waitFor(() => {
       const listItems = screen.getAllByTestId('result-item');

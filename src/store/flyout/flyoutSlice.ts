@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Pokemon } from '../../types';
+import { Pokemon } from '../../types/types';
 
 const flyoutSlice = createSlice({
   name: 'flyout',

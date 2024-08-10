@@ -1,35 +1,29 @@
-import { useEffect, useState } from 'react';
-
-import './_style.scss';
-import { useSearchQuery } from '../../hooks/useSearchQuery';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import { useNavigateMethods } from '../../hooks/useNavigateMethods';
 import { ThemeSwitcher } from '../themeSwitcher/themeSwitcher';
+import { useRouter } from 'next/router';
 
 export function SearchField() {
-  const { searchQuery, setSearchQuery } = useSearchQuery();
-  const [searchValue, setSearchValue] = useState(searchQuery);
-  const { navigateToMainPage } = useNavigateMethods();
+  const { getSearchValue, navigateToMainPage } = useNavigateMethods();
+  const [searchValue, setSearchValue] = useState(getSearchValue());
 
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (searchQuery) {
-      navigate(`/?page=1${searchQuery && '&search=' + searchQuery}`);
-    }
-  }, []);
-
-  useEffect(() => {
-    setSearchValue(searchQuery);
-  }, [searchQuery]);
+  const router = useRouter();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = event.currentTarget;
     const input = form.elements.namedItem('search') as HTMLInputElement;
     const { value } = input;
-    setSearchQuery(value);
-    navigate(`/?page=1${value && '&search=' + value}`);
+    const query: { page: string; search?: string } = { page: '1' };
+
+    if (value) {
+      query.search = value;
+    }
+
+    router.push({
+      pathname: '/',
+      query: query,
+    });
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {

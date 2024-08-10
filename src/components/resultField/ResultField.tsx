@@ -1,5 +1,4 @@
-import './_style.scss';
-import { MouseEvent, useMemo, useRef } from 'react';
+import { MouseEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { LIMIT } from '../../constant';
 import { useNavigateMethods } from '../../hooks/useNavigateMethods';
 import { Buttons } from '../buttons/buttons';
@@ -7,21 +6,20 @@ import { List } from '../list/list';
 import { Loader } from '../loader/loader';
 import { useGetAllPokemonQuery, useGetPokemonByNameQuery } from '../../store/api/api';
 import { Flyout } from '../flyout/flyout';
+import { useRouter } from 'next/router';
 
-export function ResultField() {
-  const { navigateToMainPage, getPageValue, getSearchValue } = useNavigateMethods();
-
+export default function ResultField() {
+  const { navigateToMainPage, getSearchValue, getPageValue } = useNavigateMethods();
+  const router = useRouter();
+  const [isDataLoaded, setIsDataLoaded] = useState(true);
   const list = useRef(null);
 
-  const page = useMemo(() => getPageValue(), [getPageValue]);
+  const pageValue = useMemo(() => getPageValue(), [getPageValue]);
   const searchValue = useMemo(() => getSearchValue().trim().toLowerCase(), [getSearchValue]);
-  const { data: allPokemon, isFetching: isAllLoading } = useGetAllPokemonQuery(page);
-  const {
-    data: searchedPokemon,
-    isFetching: isSearchLoading,
-    isError: isSearchError,
-  } = useGetPokemonByNameQuery(searchValue, {
-    skip: !searchValue,
+
+  const { data: allPokemon } = useGetAllPokemonQuery(pageValue, { skip: router.isFallback });
+  const { data: searchedPokemon, isError: isSearchError } = useGetPokemonByNameQuery(searchValue, {
+    skip: router.isFallback,
   });
 
   const results = useMemo(() => {
@@ -31,17 +29,41 @@ export function ResultField() {
     return allPokemon ? allPokemon : null;
   }, [searchValue, searchedPokemon, allPokemon, isSearchError]);
 
-  const isDataLoaded = !isAllLoading && !isSearchLoading;
-
   const returnToMainPage = (e: MouseEvent<HTMLElement>) => {
     if (e.target instanceof Node && e.target.contains(list.current)) {
       navigateToMainPage();
     }
   };
 
-  const isPrevBtnDisabled = () => !isDataLoaded || !results || page === 1;
+  const isPrevBtnDisabled = !isDataLoaded || !results || pageValue === 1;
 
-  const isNextBtnDisabled = () => !isDataLoaded || !results || !!(results && results.length < LIMIT);
+  const isNextBtnDisabled = !isDataLoaded || !results || !!(results && results.length < LIMIT);
+
+  useEffect(() => {
+    const handleStart = (url: string) => {
+      const length = url.split('/').length;
+
+      if (length < 3 && !router.query.id) {
+        setIsDataLoaded(false);
+      }
+    };
+
+    router.events.on('routeChangeStart', handleStart);
+
+    return () => {
+      router.events.off('routeChangeStart', handleStart);
+    };
+  }, [router]);
+
+  const toggleLoader = () => {
+    setIsDataLoaded(false);
+  };
+
+  useEffect(() => {
+    if (results && (isPrevBtnDisabled || isNextBtnDisabled)) {
+      setIsDataLoaded(true);
+    }
+  }, [results]);
 
   return (
     <div className="results" onClick={returnToMainPage}>
@@ -54,7 +76,11 @@ export function ResultField() {
           </div>
         )}
       </div>
-      <Buttons isNextBtnDisabled={isNextBtnDisabled()} isPrevBtnDisabled={isPrevBtnDisabled()} />
+      <Buttons
+        isNextBtnDisabled={isNextBtnDisabled}
+        isPrevBtnDisabled={isPrevBtnDisabled}
+        toggleLoader={toggleLoader}
+      />
       <Flyout />
     </div>
   );

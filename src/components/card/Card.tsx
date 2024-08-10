@@ -1,6 +1,9 @@
+'use client';
+
 import { useEffect, useState } from 'react';
-import { Pokemon } from '../../types';
+import { Pokemon } from '../../types/types';
 import { Loader } from '../loader/loader';
+import Image from 'next/image';
 
 type CardProps = {
   data: Pokemon;
@@ -32,8 +35,10 @@ export function Card({ data }: CardProps) {
     <div className="card" data-testid="card">
       <div className="card-img-container">
         {!isImageLoaded && <Loader />}
-        <img
+        <Image
           className={`card-img ${isImageLoaded ? 'loaded' : ''}`}
+          width={280}
+          height={280}
           src={front_default}
           alt={name}
           onLoad={handleImageLoad}

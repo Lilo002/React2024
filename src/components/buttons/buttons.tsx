@@ -1,44 +1,46 @@
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { useNavigateMethods } from '../../hooks/useNavigateMethods';
-import './buttons.scss';
+import { useRouter } from 'next/router';
 
 type ButtonsProps = {
   isPrevBtnDisabled: boolean;
   isNextBtnDisabled: boolean;
+  toggleLoader: () => void;
 };
-export function Buttons({ isPrevBtnDisabled, isNextBtnDisabled }: ButtonsProps) {
-  const { getPageValue, createSearchParams, navigateToMainPage } = useNavigateMethods();
+export function Buttons({ isPrevBtnDisabled, isNextBtnDisabled, toggleLoader }: ButtonsProps) {
+  const router = useRouter();
+
+  const { createSearchParams, getPageValue } = useNavigateMethods();
   const currentPage = getPageValue();
 
   const prevPageUrl = `/?${createSearchParams(currentPage - 1)}`;
   const nextPageUrl = `/?${createSearchParams(currentPage + 1)}`;
 
-  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, isDisabled: boolean) => {
-    if (isDisabled) {
-      e.preventDefault();
-      navigateToMainPage();
-    }
-  };
-
   const createButtonClass = (isDisabled: boolean) => {
     return `button ${isDisabled ? 'disabled' : ''}`;
   };
 
+  const goToNextPage = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    if (isNextBtnDisabled) return;
+    router.push(nextPageUrl);
+    toggleLoader();
+  };
+
+  const goToPrevPage = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    if (isPrevBtnDisabled) return;
+    router.push(prevPageUrl);
+    toggleLoader();
+  };
+
   return (
     <div className="left-buttons">
-      <Link
-        to={prevPageUrl}
-        className={createButtonClass(isPrevBtnDisabled)}
-        onClick={(e) => handleClick(e, isPrevBtnDisabled)}
-      >
+      <Link href={prevPageUrl} className={createButtonClass(isPrevBtnDisabled)} onClick={(e) => goToPrevPage(e)}>
         prev
       </Link>
 
-      <Link
-        to={nextPageUrl}
-        className={createButtonClass(isNextBtnDisabled)}
-        onClick={(e) => handleClick(e, isNextBtnDisabled)}
-      >
+      <Link href={nextPageUrl} className={createButtonClass(isNextBtnDisabled)} onClick={(e) => goToNextPage(e)}>
         next
       </Link>
     </div>
