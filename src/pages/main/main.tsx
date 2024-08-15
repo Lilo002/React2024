@@ -1,18 +1,22 @@
 import { Link } from 'react-router-dom';
+import { useAppSelector } from '../../utils/store/hooks';
+import { UserItem } from '../../components/user/user';
 
 export const Main: React.FC = () => {
+  const users = useAppSelector(state => state.users);
+
   return (
-    <div>
-      <nav>
-        <ul>
-          <li>
-            <Link to="/first">First From</Link>
-          </li>
-          <li>
-            <Link to="/second">Second From</Link>
-          </li>
-        </ul>
+    <>
+      <nav className="navigation">
+        <Link to="/first">Controlled From</Link>
+
+        <Link to="/second">Uncontrolled From</Link>
       </nav>
-    </div>
+      <div className="user-list">
+        {users.map((user, i) => {
+          return <UserItem data={user} key={i} />;
+        })}
+      </div>
+    </>
   );
 };
