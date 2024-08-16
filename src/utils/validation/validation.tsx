@@ -1,9 +1,9 @@
 import * as Yup from 'yup';
-import { Countries, MAX_FILE_SIZE } from '../../constant/constant';
+import { MAX_FILE_SIZE } from '../../constant/constant';
 
 export const schema = Yup.object({
   name: Yup.string()
-    .matches(/^[A-Z]/, 'Name must start with an uppercase letter')
+    .matches(/^[A-Z]/, 'Name must start with an uppercase Latin letter')
     .required('Field is required'),
   age: Yup.number()
     .typeError('Age must be a number')
@@ -16,7 +16,7 @@ export const schema = Yup.object({
   password: Yup.string()
     .matches(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/,
-      'Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character'
+      'Password must contain at least 1 uppercase Latin letter, 1 lowercase Latin letter, 1 number, and 1 special character'
     )
     .required('Field is required'),
   passwordRepeat: Yup.string()
@@ -41,5 +41,5 @@ export const schema = Yup.object({
     .required('Field is required'),
   country: Yup.string()
     .required('Country is required')
-    .oneOf(Countries, 'Please select a valid country'),
+    .matches(/^[A-Za-z]+$/, 'Country must contain only Latin letters'),
 });
