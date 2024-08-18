@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { MAX_FILE_SIZE } from '../../constant/constant';
+import { Countries, MAX_FILE_SIZE } from '../../constant/constant';
 
 export const schema = Yup.object({
   name: Yup.string()
@@ -41,5 +41,5 @@ export const schema = Yup.object({
     .required('Field is required'),
   country: Yup.string()
     .required('Country is required')
-    .matches(/^[A-Za-z]+$/, 'Country must contain only Latin letters'),
+    .oneOf(Countries, 'Please select a valid country'),
 });

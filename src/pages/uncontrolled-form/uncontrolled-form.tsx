@@ -14,9 +14,7 @@ export const UncontrolledForm: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const countries = useAppSelector(state => state.country);
-  const [isValid, setIsValid] = useState<boolean>(true);
   const [errors, setErrors] = useState<Errors>({});
-  const [dropdown, setDropdown] = useState<string[]>([]);
   const [password, setPassword] = useState('');
 
   const submitFrom = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -45,32 +43,6 @@ export const UncontrolledForm: React.FC = () => {
     }
   };
 
-  const handleCountryClick = (country: string) => {
-    if (ref.current && ref.current.elements) {
-      const countryElement = ref.current.elements.namedItem(
-        'country'
-      ) as HTMLInputElement;
-      if (countryElement) {
-        countryElement.value = country;
-      }
-    }
-    setDropdown([]);
-  };
-
-  const handleCountryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.value) {
-      setDropdown([]);
-      return;
-    }
-    setDropdown(
-      countries.filter(
-        country =>
-          country.toLowerCase().startsWith(e.target.value.toLowerCase()) &&
-          country.toLowerCase() !== e.target.value.toLowerCase()
-      )
-    );
-  };
-
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
   };
@@ -78,12 +50,7 @@ export const UncontrolledForm: React.FC = () => {
   return (
     <>
       <h1>Uncontrolled form</h1>
-      <form
-        className="form"
-        ref={ref}
-        onSubmit={submitFrom}
-        onChange={() => setIsValid(true)}
-      >
+      <form className="form" ref={ref} onSubmit={submitFrom}>
         <div className="form-field">
           <div className="form-input">
             <label htmlFor="name">Name:</label>
@@ -169,29 +136,24 @@ export const UncontrolledForm: React.FC = () => {
           <div className="form-input">
             <label htmlFor="country">Country:</label>
             <input
-              autoComplete="off"
               type="text"
               id="country"
               name="country"
-              onChange={handleCountryChange}
+              list="countryData"
+              autoComplete="off"
             />
           </div>
-          <div className="form-dropdown">
-            {dropdown &&
-              dropdown.map((country, i) => (
-                <div
-                  className="dropdown-item"
-                  key={i}
-                  onClick={() => handleCountryClick(country)}
-                >
-                  {country}
-                </div>
-              ))}
-          </div>
+          <datalist id="countryData">
+            {countries.map((country, i) => (
+              <option className="dropdown-item" key={i}>
+                {country}
+              </option>
+            ))}
+          </datalist>
           {errors?.country && <div className="error">{errors.country}</div>}
         </div>
 
-        <input type="submit" value="Submit" disabled={!isValid}></input>
+        <input type="submit" value="Submit"></input>
       </form>
     </>
   );

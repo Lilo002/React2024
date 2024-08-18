@@ -19,8 +19,6 @@ export const ControlledForm: React.FC = () => {
     handleSubmit,
     formState: { errors, isValid },
     watch,
-    setValue,
-    trigger,
   } = useForm({
     resolver: yupResolver(schema),
     mode: 'onChange',
@@ -34,11 +32,6 @@ export const ControlledForm: React.FC = () => {
 
       navigate('/');
     }
-  };
-
-  const handleCountryClick = (country: string) => {
-    setValue('country', country);
-    trigger('country');
   };
 
   return (
@@ -147,28 +140,16 @@ export const ControlledForm: React.FC = () => {
               type="text"
               id="country"
               {...register('country')}
+              list="countryData"
             />
           </div>
-          <div className="form-dropdown">
-            {watch('country') &&
-              countries
-                .filter(
-                  country =>
-                    country
-                      .toLowerCase()
-                      .startsWith(watch('country').toLowerCase()) &&
-                    country.toLowerCase() !== watch('country').toLowerCase()
-                )
-                .map((country, i) => (
-                  <div
-                    className="dropdown-item"
-                    key={i}
-                    onClick={() => handleCountryClick(country)}
-                  >
-                    {country}
-                  </div>
-                ))}
-          </div>
+          <datalist id="countryData">
+            {countries.map((country, i) => (
+              <option className="dropdown-item" key={i}>
+                {country}
+              </option>
+            ))}
+          </datalist>
           {errors.country && (
             <div className="error">{errors.country.message}</div>
           )}
